@@ -4,10 +4,19 @@
 <mapper namespace="ee.tlu.evkk.api.dao.TextDao">
 
 
-  <select id="findTextById" resultType="java.lang.String">
-        select content
-        from core.text
-        where core.text.id in #{textId};
+  <select id="findMiniStats" resultType="java.lang.String">
+       select array_to_json(array_agg(row_to_json(t)))
+        from (
+        select distinct count(tp1.text_id) as sum,
+        sum(tp2.property_value::integer) as sonu,
+        sum(tp3.property_value::integer) as lauseid
+        from core.text_property as tp1
+        JOIN core.text_property as tp2 on tp1.text_id=tp2.text_id
+        JOIN core.text_property as tp3 on tp2.text_id=tp3.text_id
+        WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
+        #{cId}
+    </foreach> AND tp2.property_name = 'sonu' AND tp3.property_name = 'lauseid'
+        ) t
     </select>
 
     <select id="findDetailedValueByPropertyName" resultType="java.lang.String">

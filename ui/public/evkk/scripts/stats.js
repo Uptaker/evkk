@@ -27,16 +27,16 @@ async function fetchMiniStats() {
     let result;
     try {
         result = await $.ajax({
-            url: "db/server.php",
-            type: "POST",
-            data: { fetchMiniStats: selectedKorpus, fetchValue: filter },
-            dataType: 'JSON',
+            url: "/api/texts/getMiniStats",
+            type: "GET",
+            data: { corpus: selectedKorpus.join() },
         });
-        console.log(selectedKorpus)
+        console.log("ministats " + result)
         console.log("AJAX: Fetching selected korpus mini stats... " + JSON.stringify(result));
-        loadMiniStats(result);
+        loadMiniStats(JSON.parse(result));
     } catch (error) {
         console.error(error);
+        console.log("ministats FAIL" + result)
     }
 }
 
@@ -109,7 +109,7 @@ async function selectKorpus() {
         console.log("added " + next);
     }
     await updateKorpusCheckboxes();
-    // await fetchMiniStats();
+    await fetchMiniStats();
 }
 
 // Checkbox style manipulation (unchecks everything)
@@ -151,7 +151,7 @@ async function updateKorpusCheckboxes() {
         // knames = await fetchKorpusNames(selectedKorpus);
         await fetchSome();
     }
-    // await fetchMiniStats();
+    await fetchMiniStats();
 }
 
 // fetches Korpus names, used in updateKorpusCheckboxes()
@@ -201,16 +201,13 @@ async function fetchSome() {
             url: "/api/texts/getDetailedValues",
             type: "GET",
             data: { corpus: selectedKorpus.join(), pName: filter},
-            // dataType: 'JSON',
+            // dataType: 'JSON'
         });
         loadStats(JSON.parse(result));
-        console.log("WITHOUT STRINGIFY " + result)
+        console.log("ajax successful, parsed data: " + result)
     } catch (error) {
         console.error(error);
-        // console.log("NOT WORKING" + JSON.stringify(result));
-        console.log("NOT WORKING" + result);
     }
-    console.log(result);
 }
 
 // AJAX for fetching data for the pie chart
@@ -236,7 +233,7 @@ function loadStats(data) {
 
     // filter gained data
     filterData.forEach((e) => {
-        if (e.value == null) {
+        if (e.value == "") {
             ages.push("TUNDMATU");
         } else {
             ages.push(e.value

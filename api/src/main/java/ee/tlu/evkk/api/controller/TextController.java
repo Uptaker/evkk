@@ -16,32 +16,21 @@ public class TextController {
         textDao = uusTDao;
     }
 
-
-    @GetMapping("/kysitekst")
-    public String kysiTekst(String id) {
-        return textDao.findTextById(UUID.fromString(id));
-    }
-
     @CrossOrigin("*")
     @GetMapping("/getValues")
     public String getValues(String cId) {
         return textDao.findValueByPropertyName(cId);
     }
 
+    @GetMapping("/getMiniStats")
+    public String getMiniStats(String corpus) {
+        String[] corpusArray = corpus.split(",");
+        return textDao.findMiniStats(corpusArray);
+    }
+
     @GetMapping("/getDetailedValues")
     public String getValues(@RequestParam("corpus") String corpus, String pValue, String pName) {
-        // List<String> list = new ArrayList<>();
         String[] corpusArray = corpus.split(",");
-        // for (int i = 0; i < corpusArray.length; i++) {
-        //     list.add("'" + corpusArray[i] + "'");
-        // }
-        // String cId = String.join(",", list); // "'corpus', 'corpus', 'corpus'"
-
-        // debugging
-        System.out.println(corpus);
-        // System.out.println(corpusArray);
-        // System.out.println(cId);
-
         return textDao.findDetailedValueByPropertyName(pValue, pName, corpusArray);
     }
 
