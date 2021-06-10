@@ -18,6 +18,7 @@
 		<div class="logo">
 			<a href="index.html"><img src="img/logo.png" alt="TLU"></a>
 			<a href="index.html"><h1>Eesti Vahekeele Korpus</h1></a>
+			<button id="help-toggle">Kuva abi</button>
 		</div>
 
 		<!-- Navigation -->
@@ -83,23 +84,38 @@
 				</form>
 
 				<!-- Filter selection -->
+			<div id="filterlife">
 				<h2>Filter</h2>
 				<select id="filterBy" name="filterBy">
 					<option value="vanus">Vanus</option>
 					<option value="haridus">Haridus</option>
 					<option value="sugu">Sugu</option>
 					<option value="elukoht">Elukoht</option>
-
 					<option value="kodukeel">Kodune keel</option>
 					<option value="emakeel">Emakeel</option>
 					<option value="tekstikeel">Tekstikeel</option>
 					<option value="abivahendid">Abivahendid</option>
-
 					<option value="taust">Sotsiaalne staatus</option>
 					<option value="keeletase">Keele valdamise tase</option>
-					<option value="tekstikeel">Tekstikeel</option>
 					<option value="tekstityyp">Tekstitüüp</option>
 				</select>
+
+				<div id="filters">
+				<h2>Filter2</h2>
+				<form>
+					<!-- Buttons to check or uncheck everything -->
+					<div id="buttons">
+						<button type="button" id="selectAllChoices">Kõik</button>
+						<button type="button" id="unselectAllChoices">Eemalda</button>
+					</div>
+
+					<!-- Korpus selection -->
+					<div id="SecondFilterSelection">
+
+					</div>
+				</form>
+				</div>
+			</div>
 		</div>
 
 		<!-- Stats (right side) -->
@@ -111,9 +127,9 @@
 
 	<!-- Mini stats -->
 	<section class="miniStats">
-		<p>Dokumente<br><span id="documents"></span></p>
-		<p>Lauseid<br><span id="sentences"></span></p>
-		<p>Sõnu<br><span id="words"></span></p>
+		<p id=documents2>Dokumente<br><span id="documents"></span></p>
+		<p id=sentences2>Lauseid<br><span id="sentences"></span></p>
+		<p id=words2>Sõnu<br><span id="words"></span></p>
 	</section>
 
 

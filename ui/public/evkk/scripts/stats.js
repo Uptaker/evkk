@@ -3,6 +3,7 @@
 let selectedKorpus = []; // every selected korpus
 let knames = []; // every selected korpus name
 let filter = document.querySelector("#filterBy").value; // current filter
+const helpToggle = document.getElementById('help-toggle');
 
 // On page load
 $(document).ready(async function () {
@@ -19,7 +20,160 @@ $(document).ready(async function () {
     document.querySelector("#selectAllKorpus").addEventListener("click", selectKorpus);
     document.querySelector("#unselectAllKorpus").addEventListener("click", deselectKorpus);
     document.querySelector("#filterBy").addEventListener("change", updateFilter);
+    helpToggle.addEventListener('click', show); 
 });
+
+function show(){
+    if(helpToggle.innerText == ('Kuva abi')){
+        helpToggle.innerText = 'Peida abi';
+        $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#korpusSelection").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
+        $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#filterlife").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
+       
+           
+    } else {
+        helpToggle.innerText = 'Kuva abi';
+        $("#selectAllKorpus").removeAttr('aria-label data-balloon-pos class')
+        $("#unselectAllKorpus").removeAttr('aria-label data-balloon-pos class')
+        $("#documents2").removeAttr('aria-label data-balloon-pos class')
+        $("#korpusSelection").removeAttr('aria-label data-balloon-pos class')
+        $("#words2").removeAttr('aria-label data-balloon-pos class')
+        $("#sentences2").removeAttr('aria-label data-balloon-pos class')
+        $("#filterlife").removeAttr('aria-label data-balloon-pos class')
+        
+    }
+}
+
+
+function readfilter2fromDB(selectionimistasaab){            // LOOME FILTER 2 LOetelu
+    document.getElementById('SecondFilterSelection').innerHTML="";
+    console.log('olenpede');
+    var x = document.getElementById("filters");
+    let list1=['Tundmatu', 'Ei', 'Ja'];
+    let list2=['Tundmatu', 'Mees', 'Naine'];
+    let muutuja = [];
+    
+    if(selectionimistasaab =='sugu'){
+        muutuja = list2;
+        x.style.display = "block";
+    }
+    else if(selectionimistasaab =='abivahendid'){
+        muutuja = list1;
+        x.style.display = "block";
+    }
+    else{
+        x.style.display = "none";
+    }
+    console.log(selectionimistasaab);
+    var docFrag = document.createDocumentFragment();
+
+    
+    /*
+    input type="checkbox" name="korpus"
+    value="cFqPphvYi" class="btn-check" id="btn-check0" autocomplete="off" checked/>
+    <label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Eesti keele olümpiaadi tööd</span></label>
+    */
+    for(var x = 0; x < muutuja.length; x++){
+        var button = document.createElement('input');
+        button.setAttribute('type', 'checkbox');
+        button.setAttribute('name', selectionimistasaab);
+        button.setAttribute('value', muutuja[x]);
+        button.setAttribute('class', 'btn-check');
+        button.setAttribute('id', ("btn-check22"+x));
+        button.setAttribute('autocomplete', 'off');
+        button.setAttribute('checked', '');
+
+        docFrag.appendChild(button);
+
+        var button2 = document.createElement('label');
+        button2.setAttribute('class', 'checkbox');
+        button2.setAttribute('for', ("btn-check22"+x));
+        var button3 = document.createElement('i');
+        button3.setAttribute('class', 'fas fa-check');
+
+        button2.appendChild(button3);
+
+        var button4 = document.createElement('span');
+        button4.innerHTML = muutuja[x]; // clear existing
+        button2.appendChild(button4);
+
+        docFrag.appendChild(button2);
+
+        //docFrag.appendChild(button3);
+
+    }
+    
+    document.getElementById('SecondFilterSelection').appendChild(docFrag);
+
+    //TEEME FILTER2 NUPULE KUULAJAD
+    
+    document.querySelectorAll('input[name='+selectionimistasaab+']')
+        .forEach(el => el
+            .addEventListener('click', updateFilter2Checkboxes));
+    console.log("kuulan");
+
+    document.querySelector("#selectAllChoices").addEventListener("click", selectFilter2Checkboxes);
+    document.querySelector("#unselectAllChoices").addEventListener("click", deselectFilter2Checkboxes);
+
+}
+
+
+async function updateFilter2Checkboxes() {
+    filter = document.querySelector("#filterBy").value;
+    //console.log("muudan midagi");
+    let checkboxes = document.querySelectorAll('input[name='+filter+']:checked');
+    let allCheckboxes = document.querySelectorAll('input[name='+filter+']');
+    for (let i = 0; i < allCheckboxes.length; i++) {
+        let next = allCheckboxes[i].nextElementSibling.firstChild;
+        next.classList.add("hidden");
+    }
+    if (checkboxes.length == 0) {
+        for (i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+            let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
+        }
+    } else {
+        for (let i = 0; i < checkboxes.length; i++) {
+            //selectedKorpus.push(checkboxes[i].defaultValue);
+            let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
+        }
+    }
+
+}
+
+// Checkbox style manipulation (checks everything), then fetches all stats
+async function selectFilter2Checkboxes() {
+    filter = document.querySelector("#filterBy").value;
+    let checkboxes = document.querySelectorAll('input[name='+filter+']');
+    for (i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = true;
+        let next = checkboxes[i].nextElementSibling.firstChild;
+        next.classList.remove("hidden");
+        next.classList.remove("add");
+        console.log("added " + next);
+    }
+}
+
+// Checkbox style manipulation (unchecks everything)
+function deselectFilter2Checkboxes() {
+    let checkboxes = document.querySelectorAll('input[name='+filter+']');
+    for (i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = false;
+        let next = checkboxes[i].nextElementSibling.firstChild;
+        next.classList.add("hidden");
+        console.log("removed " + next);
+
+    }
+
+}
+
+
 
 // AJAX for fetching mini stats
 async function fetchMiniStats() {
@@ -55,6 +209,7 @@ function numberWithCommas(x) {
 // updates the stats title, beautifies them, then executes checkbox updater
 function updateFilter() {
     filter = document.querySelector("#filterBy").value;
+    readfilter2fromDB(filter);
     let beautify;
     switch (filter) {
         case "vanus":
