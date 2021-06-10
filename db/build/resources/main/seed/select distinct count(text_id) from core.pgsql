@@ -1,0 +1,1 @@
+select distinct count(text_id) from core.text_property where property_name = 'sonu'

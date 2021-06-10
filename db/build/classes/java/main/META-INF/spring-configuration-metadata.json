@@ -1,0 +1,23 @@
+{
+  "groups": [
+    {
+      "name": "flyway",
+      "type": "ee.evkk.db.flyway.FlywayMigrationStrategyProperties",
+      "sourceType": "ee.evkk.db.flyway.FlywayMigrationStrategyProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "flyway.seed-disabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "ee.evkk.db.flyway.FlywayMigrationStrategyProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "flyway.seed-locations",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "ee.evkk.db.flyway.FlywayMigrationStrategyProperties"
+    }
+  ],
+  "hints": []
+}

@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "evkk.api",
+      "type": "ee.tlu.evkk.api.ApiProperties",
+      "sourceType": "ee.tlu.evkk.api.ApiProperties"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

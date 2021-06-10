@@ -1,0 +1,1 @@
+SELECT * FROM core.text_property WHERE property_name = 'sugu' AND property_value = 'naine';
