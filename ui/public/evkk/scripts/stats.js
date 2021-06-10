@@ -10,9 +10,10 @@ let availableValues = [];
 $(document).ready(async function () {
     // initial fetchers on page load, to display stats
     // main stats
-    updateKorpusCheckboxes();
+    // readfilter2fromDB(filter);
+    await updateKorpusCheckboxes();
     // await fetchAll();
-    await fetchMiniStats();
+    // await fetchMiniStats();
 
     // event listeners
     document.querySelectorAll('input[name=korpus]')
@@ -35,7 +36,6 @@ function show(){
         $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
         $("#filterlife").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
        
-           
     } else {
         helpToggle.innerText = 'Kuva abi';
         $("#selectAllKorpus").removeAttr('aria-label data-balloon-pos class')
@@ -52,16 +52,9 @@ function show(){
 
 async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetelu
     document.getElementById('SecondFilterSelection').innerHTML="";
-    console.log('olenpede');
     var x = document.getElementById("filters");
-
+    // availableValues = [];
     await fetchAvailableValues();
-    
-    if (selectionimistasaab != ""){
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
     console.log(selectionimistasaab);
     var docFrag = document.createDocumentFragment();
 
@@ -197,9 +190,8 @@ function numberWithCommas(x) {
 }
 
 // updates the stats title, beautifies them, then executes checkbox updater
-function updateFilter() {
+async function updateFilter() {
     filter = document.querySelector("#filterBy").value;
-    readfilter2fromDB(filter);
     let beautify;
     switch (filter) {
         case "vanus":
@@ -240,7 +232,7 @@ function updateFilter() {
             break;
     }
     document.querySelector(".stats h2").innerHTML = `Tekstid ${beautify} järgi`;
-    updateKorpusCheckboxes();
+    await updateKorpusCheckboxes();
 }
 
 // Checkbox style manipulation (checks everything), then fetches all stats
@@ -271,7 +263,7 @@ function deselectKorpus() {
 // Collects every selected korpus checkbox, styles them and then fetches appropriate stats
 async function updateKorpusCheckboxes() {
     filter = document.querySelector("#filterBy").value;
-    fetchAvailableValues();
+    await readfilter2fromDB(filter);
     selectedKorpus = [];
     let checkboxes = document.querySelectorAll('input[name=korpus]:checked');
     let allCheckboxes = document.querySelectorAll('input[name=korpus]');
@@ -286,17 +278,14 @@ async function updateKorpusCheckboxes() {
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
         }
-        //get data for all
-        await fetchSome();
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedKorpus.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
         }
-        // knames = await fetchKorpusNames(selectedKorpus);
-        await fetchSome();
     }
+    await fetchSome();
     await fetchMiniStats();
 }
 
@@ -342,22 +331,36 @@ async function fetchSome() {
     console.log(selectedKorpus.join())
     console.log(selectedKorpus)
     let result;
+    let lcValues = [];
+    console.log("DO I EXIST " + availableValues)
+    availableValues.forEach((e) => {
+        if (e == "TUNDMATU") {
+            lcValues.splice(0, 0, "");
+        } else {
+            lcValues.push(e.toLowerCase());
+        }
+    });
+
     try {
         result = await $.ajax({
-            url: "/api/texts/getDetailedValues",
+            url: "/api/texts/getDetailedValues?",
             type: "GET",
-            data: { corpus: selectedKorpus.join(), pName: filter},
+            data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join() },
             // dataType: 'JSON'
         });
+        console.log("AAAAAAA " + lcValues.join());
         loadStats(JSON.parse(result));
         console.log("ajax successful, parsed data: " + result)
+        console.log(lcValues)
     } catch (error) {
         console.error(error);
     }
+    console.log("TEST " + lcValues.join())
 }
 
 async function fetchAvailableValues() {
     let result;
+    document.getElementById('SecondFilterSelection').innerHTML="";
     availableValues = [];
     try {
         result = await $.ajax({

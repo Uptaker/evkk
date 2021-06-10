@@ -49,7 +49,9 @@
         WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
         #{cId}
     </foreach> AND
-         tp2.property_name = #{pName} AND tp3.property_name = 'sonu' AND tp4.property_name = 'lauseid'
+         tp2.property_name = #{pName} AND tp2.property_value IN <foreach item="pValue" collection="pValue" separator="," open="(" close=")">
+        #{pValue}
+    </foreach> AND tp3.property_name = 'sonu' AND tp4.property_name = 'lauseid'
         AND tp5.property_name = 'vigu'
         GROUP BY tp2.property_name, tp2.property_value
         ) t

@@ -31,14 +31,17 @@ public class TextController {
     @GetMapping("/getDetailedValues")
     public String getValues(@RequestParam("corpus") String corpus, String pValue, String pName) {
         String[] corpusArray = corpus.split(",");
-        return textDao.findDetailedValueByPropertyName(pValue, pName, corpusArray);
+        String[] pValueArray = pValue.split(",");
+        System.out.println(pValue);
+        System.out.println(pValueArray);
+        return textDao.findDetailedValueByPropertyName(pValueArray, pName, corpusArray);
     }
 
     @GetMapping("/getAvailableValues")
     public String getAvailableValues(String pName) {
         return textDao.findAvailableValues(pName);
     }
-
+    
     @GetMapping("/tervitus")
     public String tervitus(){
         return "Tere";
