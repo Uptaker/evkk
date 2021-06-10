@@ -19,6 +19,15 @@
         ) t
     </select>
 
+      <select id="findAvailableValues" resultType="java.lang.String">
+       select array_to_json(array_agg(row_to_json(t)))
+        from (
+        select distinct tp1.property_value as value
+        from core.text_property as tp1
+        WHERE tp1.property_name = #{pName}
+        ) t
+    </select>
+
     <select id="findDetailedValueByPropertyName" resultType="java.lang.String">
        select array_to_json(array_agg(row_to_json(t)))
         from (

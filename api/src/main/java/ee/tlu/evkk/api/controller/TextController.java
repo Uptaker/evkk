@@ -34,6 +34,11 @@ public class TextController {
         return textDao.findDetailedValueByPropertyName(pValue, pName, corpusArray);
     }
 
+    @GetMapping("/getAvailableValues")
+    public String getAvailableValues(String pName) {
+        return textDao.findAvailableValues(pName);
+    }
+
     @GetMapping("/tervitus")
     public String tervitus(){
         return "Tere";

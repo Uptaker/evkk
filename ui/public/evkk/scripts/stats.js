@@ -4,6 +4,7 @@ let selectedKorpus = []; // every selected korpus
 let knames = []; // every selected korpus name
 let filter = document.querySelector("#filterBy").value; // current filter
 const helpToggle = document.getElementById('help-toggle');
+let availableValues = [];
 
 // On page load
 $(document).ready(async function () {
@@ -49,23 +50,16 @@ function show(){
 }
 
 
-function readfilter2fromDB(selectionimistasaab){            // LOOME FILTER 2 LOetelu
+async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetelu
     document.getElementById('SecondFilterSelection').innerHTML="";
     console.log('olenpede');
     var x = document.getElementById("filters");
-    let list1=['Tundmatu', 'Ei', 'Ja'];
-    let list2=['Tundmatu', 'Mees', 'Naine'];
-    let muutuja = [];
+
+    await fetchAvailableValues();
     
-    if(selectionimistasaab =='sugu'){
-        muutuja = list2;
+    if (selectionimistasaab != ""){
         x.style.display = "block";
-    }
-    else if(selectionimistasaab =='abivahendid'){
-        muutuja = list1;
-        x.style.display = "block";
-    }
-    else{
+    } else {
         x.style.display = "none";
     }
     console.log(selectionimistasaab);
@@ -77,11 +71,11 @@ function readfilter2fromDB(selectionimistasaab){            // LOOME FILTER 2 LO
     value="cFqPphvYi" class="btn-check" id="btn-check0" autocomplete="off" checked/>
     <label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Eesti keele olümpiaadi tööd</span></label>
     */
-    for(var x = 0; x < muutuja.length; x++){
+    for(var x = 0; x < availableValues.length; x++){
         var button = document.createElement('input');
         button.setAttribute('type', 'checkbox');
         button.setAttribute('name', selectionimistasaab);
-        button.setAttribute('value', muutuja[x]);
+        button.setAttribute('value', availableValues[x]);
         button.setAttribute('class', 'btn-check');
         button.setAttribute('id', ("btn-check22"+x));
         button.setAttribute('autocomplete', 'off');
@@ -98,7 +92,7 @@ function readfilter2fromDB(selectionimistasaab){            // LOOME FILTER 2 LO
         button2.appendChild(button3);
 
         var button4 = document.createElement('span');
-        button4.innerHTML = muutuja[x]; // clear existing
+        button4.innerHTML = availableValues[x]; // clear existing
         button2.appendChild(button4);
 
         docFrag.appendChild(button2);
@@ -124,7 +118,6 @@ function readfilter2fromDB(selectionimistasaab){            // LOOME FILTER 2 LO
 
 async function updateFilter2Checkboxes() {
     filter = document.querySelector("#filterBy").value;
-    //console.log("muudan midagi");
     let checkboxes = document.querySelectorAll('input[name='+filter+']:checked');
     let allCheckboxes = document.querySelectorAll('input[name='+filter+']');
     for (let i = 0; i < allCheckboxes.length; i++) {
@@ -144,7 +137,6 @@ async function updateFilter2Checkboxes() {
             next.classList.remove("hidden");
         }
     }
-
 }
 
 // Checkbox style manipulation (checks everything), then fetches all stats
@@ -168,9 +160,7 @@ function deselectFilter2Checkboxes() {
         let next = checkboxes[i].nextElementSibling.firstChild;
         next.classList.add("hidden");
         console.log("removed " + next);
-
     }
-
 }
 
 
@@ -281,6 +271,7 @@ function deselectKorpus() {
 // Collects every selected korpus checkbox, styles them and then fetches appropriate stats
 async function updateKorpusCheckboxes() {
     filter = document.querySelector("#filterBy").value;
+    fetchAvailableValues();
     selectedKorpus = [];
     let checkboxes = document.querySelectorAll('input[name=korpus]:checked');
     let allCheckboxes = document.querySelectorAll('input[name=korpus]');
@@ -365,17 +356,26 @@ async function fetchSome() {
     }
 }
 
-// AJAX for fetching data for the pie chart
-async function fetchLanguagePercentage() {
+async function fetchAvailableValues() {
     let result;
+    availableValues = [];
     try {
         result = await $.ajax({
-            url: "db/server.php",
-            type: "POST",
-            data: { fetchLanguagePercentage: true },
-            dataType: 'JSON',
+            url: "/api/texts/getAvailableValues",
+            type: "GET",
+            data: { pName: filter},
         });
-        return result;
+
+        // turn available value data to list
+        JSON.parse(result).forEach((e) => {
+            if (e.value == "") {
+                availableValues.push("TUNDMATU");
+            } else {
+                availableValues.push(e.value
+                    .replace(/y/g, "ü").charAt(0).toUpperCase() + e.value.slice(1));
+            }
+        });
+        console.log("available values: " + availableValues);
     } catch (error) {
         console.error(error);
     }
@@ -628,70 +628,6 @@ function loadStats(data) {
             }
         ]
     };
-    option && myChart.setOption(option);
-}
-
-
-// Echarts pie chart
-function loadLanguagePercentage(data) {
-    var chartDom = document.getElementById('languagePercentage');
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    //responsive width
-    $(window).on('resize', function () {
-        myChart.resize();
-    });
-
-    // get data
-    let pieData = [];
-    data.forEach((e) => {
-        if (e.tekstikeel == null) {
-            pieData.push({ value: e.protsent, name: "TUNDMATU" });
-        } else {
-            pieData.push({ value: e.protsent, name: e.tekstikeel.toUpperCase() });
-        }
-    });
-
-    // chart settings
-    option = {
-        tooltip: {
-            trigger: 'item',
-        },
-        toolbox: {
-            show: true,
-            left: "center",
-            bottom: "bottom",
-            color: '#333',
-            itemSize: 30,
-            itemGap: 100,
-            feature: {
-                dataView: { show: true, readOnly: true, title: "Andmed" },
-                saveAsImage: { show: true, title: "Laadi alla", color: "red" }
-            }
-        },
-        legend: {
-            orient: 'horizontal',
-            left: "center",
-            top: 0
-        },
-        series: [
-            {
-                name: 'Test',
-                type: 'pie',
-                radius: '70%',
-                data: pieData,
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                }
-            }
-        ]
-    };
-
     option && myChart.setOption(option);
 }
 
