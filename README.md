@@ -1,5 +1,9 @@
 # EVKK portal
 
+## mida copyda
+- terve evkk kaust publicus
+- api sees TextController.java, TextDao.java, TextDao.xml
+
 ## General recommendations
 - All commands should be executed from project's root directory if not stated otherwise.
 
