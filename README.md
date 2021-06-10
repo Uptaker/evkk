@@ -1,5 +1,10 @@
 # EVKK portal
 
+## mida copyda
+- terve evkk kaust publicus
+- api sees TextController.java, TextDao.java, TextDao.xml
+- db sees 01d-textproperties_number.sql
+
 ## General recommendations
 - All commands should be executed from project's root directory if not stated otherwise.
 
