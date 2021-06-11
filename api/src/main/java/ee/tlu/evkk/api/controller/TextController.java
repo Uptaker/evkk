@@ -32,8 +32,6 @@ public class TextController {
     public String getValues(@RequestParam("corpus") String corpus, String pValue, String pName) {
         String[] corpusArray = corpus.split(",");
         String[] pValueArray = pValue.split(",");
-        System.out.println(pValue);
-        System.out.println(pValueArray);
         return textDao.findDetailedValueByPropertyName(pValueArray, pName, corpusArray);
     }
 

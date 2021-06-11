@@ -44,8 +44,6 @@ function showDefault() {
 
 function show(){
     if(isHelpOn){
-
-
         $("#selectAllKorpus").removeAttr('aria-label data-balloon-pos class')
         $("#unselectAllKorpus").removeAttr('aria-label data-balloon-pos class')
         $("#documents2").removeAttr('aria-label data-balloon-pos class')
@@ -387,7 +385,11 @@ async function fetchSome() {
         if (e == "tundmatu" && selectedValues.length != 0) {
             lcValues.splice(0, 0, "");
         } else {
-            lcValues.push(e.toLowerCase());
+            if (filter == 'keeletase') {
+                lcValues.push(e.toUpperCase());
+            } else {
+                lcValues.push(e.toLowerCase());
+            }
         }
     });
     console.log("sv " + selectedValues.length)

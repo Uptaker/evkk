@@ -38,7 +38,7 @@
         sum(tp4.property_value::integer) as lauseid,
         sum(tp5.property_value::integer) as vigu,
             
-        COUNT(tp2.text_id) * 100.0 / (SELECT distinct COUNT(text_id) FROM core.text_property WHERE property_name = 'korpus' AND property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
+        COUNT(tp5.text_id) * 100.0 / (SELECT distinct COUNT(text_id) FROM core.text_property WHERE property_name = 'korpus' AND property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
         #{cId}
     </foreach>) AS protsent
         from core.text_property as tp1
