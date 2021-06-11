@@ -49,7 +49,9 @@ nav a:last-child {
     border-bottom-right-radius: 5px;
 }
 
-
+footer {
+  text-align: center;
+}
 
 .stats {
     text-align: center;
@@ -433,7 +435,7 @@ input[type="checkbox"] {
     height: 15%;
     position: relative;
     background-color: #78B978;
-    color: black;
+    color: rgb(37, 63, 47);
     font-weight: bold;
     padding: 20px;
     margin-left: auto; 
@@ -443,6 +445,7 @@ input[type="checkbox"] {
     cursor: pointer;
     transition: all 0.2s;
     border-radius: 5px;
+    font-size: 16px;
 }
 
 #help-toggle:hover{

@@ -15,9 +15,11 @@ $(document).ready(async function () {
     // readfilter2fromDB(filter);
     await updateFilter();
     await updateKorpusCheckboxes();
+    // show()
     // await fetchAll();
     // await fetchMiniStats();
 
+    showDefault();
     // event listeners
     document.querySelectorAll('input[name=korpus]')
         .forEach(el => el
@@ -28,27 +30,42 @@ $(document).ready(async function () {
     helpToggle.addEventListener('click', show); 
 });
 
+function showDefault() {
+    $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#korpusSelection").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#pede").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
+
+}
+
 function show(){
-    if(helpToggle.innerText == ('Kuva abi')){
-        helpToggle.innerText = 'Peida abi';
-        $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
-        $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
-        $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
-        $("#korpusSelection").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
-        $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
-        $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
-        $("#filterlife").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
-       
-    } else {
-        helpToggle.innerText = 'Kuva abi';
+    if(helpToggle.innerText == ('Peida abi')){
+
+
         $("#selectAllKorpus").removeAttr('aria-label data-balloon-pos class')
         $("#unselectAllKorpus").removeAttr('aria-label data-balloon-pos class')
         $("#documents2").removeAttr('aria-label data-balloon-pos class')
         $("#korpusSelection").removeAttr('aria-label data-balloon-pos class')
         $("#words2").removeAttr('aria-label data-balloon-pos class')
         $("#sentences2").removeAttr('aria-label data-balloon-pos class')
-        $("#filterlife").removeAttr('aria-label data-balloon-pos class')
+        $("#pede").removeAttr('aria-label data-balloon-pos class')
+        helpToggle.innerText = 'Kuva abi';
+
+    } else {
+        helpToggle.innerText = 'Peida abi';
         
+        $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#korpusSelection").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
+        $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
+        $("#pede").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
+
+
     }
 }
 
