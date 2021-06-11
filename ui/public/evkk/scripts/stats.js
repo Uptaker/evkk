@@ -121,19 +121,22 @@ async function updateFilter2Checkboxes() {
         let next = allCheckboxes[i].nextElementSibling.firstChild;
         next.classList.add("hidden");
     }
-    if (checkboxes.length == 0) {
+    if (checkboxes.length == 0 || selectedKorpus.length == 0) {
         for (i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = true;
             let next = checkboxes[i].nextElementSibling.firstChild;
-            next.classList.remove("hidden");
         }
+        document.querySelector('#alamkorpused').style.display = 'none'
+        console.log("removed chart");
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedValues.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
-            next.classList.remove("hidden");
         }
+        document.querySelector('.echarts').style.display = 'block'
+        console.log("added chart")
     }
+    console.log("LENGTH" + checkboxes.length)
 }
 
 // Checkbox style manipulation (checks everything), then fetches all stats
@@ -159,6 +162,7 @@ function deselectFilter2Checkboxes() {
         next.classList.add("hidden");
         console.log("removed " + next);
     }
+    document.querySelector("#alamkorpused").style.display = 'none';
 }
 
 
@@ -176,6 +180,7 @@ async function fetchMiniStats() {
         console.log("ministats " + result)
         console.log("AJAX: Fetching selected korpus mini stats... " + JSON.stringify(result));
         loadMiniStats(JSON.parse(result));
+        console.log("ministats w0rk" + result)
     } catch (error) {
         console.error(error);
         console.log("ministats FAIL" + result)
@@ -184,9 +189,21 @@ async function fetchMiniStats() {
 
 // Loading the mini stats
 function loadMiniStats(results) {
-    document.querySelector("#documents").innerHTML = numberWithCommas(results[0].sum);
-    document.querySelector("#sentences").innerHTML = numberWithCommas(results[0].lauseid);
-    document.querySelector("#words").innerHTML = numberWithCommas(results[0].sonu);
+    if(results == null){
+        document.querySelector("#documents").innerHTML = "0";
+        document.querySelector("#sentences").innerHTML = "0";
+        document.querySelector("#words").innerHTML = "0";
+    }
+    else if(results[0].sum != 0) {
+        document.querySelector("#documents").innerHTML = numberWithCommas(results[0].sum);
+        document.querySelector("#sentences").innerHTML = numberWithCommas(results[0].lauseid);
+        document.querySelector("#words").innerHTML = numberWithCommas(results[0].sonu);
+
+    }else{
+        document.querySelector("#documents").innerHTML = "0";
+        document.querySelector("#sentences").innerHTML = "0";
+        document.querySelector("#words").innerHTML = "0";
+    }
 }
 
 // Number beautifier. For example: '123456789' into '123 456 789'
@@ -266,11 +283,12 @@ function deselectKorpus() {
         console.log("removed " + next);
     }
     console.log("deselected")
+    loadMiniStats(null);
+    document.querySelector("#alamkorpused").style.display = 'none';
 }
 
 // Collects every selected korpus checkbox, styles them and then fetches appropriate stats
 async function updateKorpusCheckboxes() {
-    await updateFilter2Checkboxes()
     filter = document.querySelector("#filterBy").value;
     // await readfilter2fromDB(filter);
     selectedKorpus = [];
@@ -286,14 +304,17 @@ async function updateKorpusCheckboxes() {
             checkboxes[i].checked = true;
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
+            document.querySelector('#alamkorpused').style.display = 'none'
         }
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedKorpus.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
+            document.querySelector('#alamkorpused').style.display = 'block'
         }
     }
+    await updateFilter2Checkboxes()
     await fetchSome();
     await fetchMiniStats();
 }
@@ -353,18 +374,25 @@ async function fetchSome() {
     console.log("sv " + selectedValues.length)
 
     try {
-        result = await $.ajax({
-            url: "/api/texts/getDetailedValues?",
-            type: "GET",
-            data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join() },
-            // dataType: 'JSON'
-        });
-        console.log("AAAAAAA " + lcValues.join());
-        loadStats(JSON.parse(result));
-        console.log("ajax successful, parsed data: " + result)
-        console.log(lcValues)
+        if (selectedKorpus.join().length == 0) {
+            document.querySelector('#alamkorpused').style.display = 'none'
+        } else {
+            result = await $.ajax({
+                url: "/api/texts/getDetailedValues?",
+                type: "GET",
+                data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join() },
+                // dataType: 'JSON'
+            });
+            console.log("AAAAAAA " + lcValues.join());
+            loadStats(JSON.parse(result));
+            console.log("ajax successful, parsed data: " + result)
+            console.log(lcValues)
+            // document.querySelector('#alamkorpused').style.display = 'block'
+        }
+
     } catch (error) {
         console.error(error);
+        console.log("error data: " + selectedKorpus.join());
     }
     console.log("TEST " + lcValues.join())
 }
