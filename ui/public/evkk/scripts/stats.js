@@ -1,16 +1,19 @@
 
 // global variables
 let selectedKorpus = []; // every selected korpus
+let selectedValues = []; // every selected value (väärtus)
 let knames = []; // every selected korpus name
-let filter = document.querySelector("#filterBy").value; // current filter
+let filter;
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
 
 // On page load
 $(document).ready(async function () {
+    filter = document.querySelector("#filterBy").value; // current filter
     // initial fetchers on page load, to display stats
     // main stats
     // readfilter2fromDB(filter);
+    await updateFilter();
     await updateKorpusCheckboxes();
     // await fetchAll();
     // await fetchMiniStats();
@@ -68,7 +71,7 @@ async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetel
         var button = document.createElement('input');
         button.setAttribute('type', 'checkbox');
         button.setAttribute('name', selectionimistasaab);
-        button.setAttribute('value', availableValues[x]);
+        button.setAttribute('value', availableValues[x].toLowerCase());
         button.setAttribute('class', 'btn-check');
         button.setAttribute('id', ("btn-check22"+x));
         button.setAttribute('autocomplete', 'off');
@@ -100,7 +103,7 @@ async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetel
     
     document.querySelectorAll('input[name='+selectionimistasaab+']')
         .forEach(el => el
-            .addEventListener('click', updateFilter2Checkboxes));
+            .addEventListener('click', updateKorpusCheckboxes));
     console.log("kuulan");
 
     document.querySelector("#selectAllChoices").addEventListener("click", selectFilter2Checkboxes);
@@ -111,6 +114,7 @@ async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetel
 
 async function updateFilter2Checkboxes() {
     filter = document.querySelector("#filterBy").value;
+    selectedValues = [];
     let checkboxes = document.querySelectorAll('input[name='+filter+']:checked');
     let allCheckboxes = document.querySelectorAll('input[name='+filter+']');
     for (let i = 0; i < allCheckboxes.length; i++) {
@@ -125,7 +129,7 @@ async function updateFilter2Checkboxes() {
         }
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
-            //selectedKorpus.push(checkboxes[i].defaultValue);
+            selectedValues.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
         }
@@ -143,6 +147,7 @@ async function selectFilter2Checkboxes() {
         next.classList.remove("add");
         console.log("added " + next);
     }
+    updateKorpusCheckboxes();
 }
 
 // Checkbox style manipulation (unchecks everything)
@@ -184,7 +189,7 @@ function loadMiniStats(results) {
     document.querySelector("#words").innerHTML = numberWithCommas(results[0].sonu);
 }
 
-// Number beautifier. For example: '123456789' into '123,456,789'
+// Number beautifier. For example: '123456789' into '123 456 789'
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
@@ -232,6 +237,7 @@ async function updateFilter() {
             break;
     }
     document.querySelector(".stats h2").innerHTML = `Tekstid ${beautify} järgi`;
+    await readfilter2fromDB(filter);
     await updateKorpusCheckboxes();
 }
 
@@ -247,6 +253,7 @@ async function selectKorpus() {
     }
     await updateKorpusCheckboxes();
     await fetchMiniStats();
+    console.log("selected")
 }
 
 // Checkbox style manipulation (unchecks everything)
@@ -258,12 +265,14 @@ function deselectKorpus() {
         next.classList.add("hidden");
         console.log("removed " + next);
     }
+    console.log("deselected")
 }
 
 // Collects every selected korpus checkbox, styles them and then fetches appropriate stats
 async function updateKorpusCheckboxes() {
+    await updateFilter2Checkboxes()
     filter = document.querySelector("#filterBy").value;
-    await readfilter2fromDB(filter);
+    // await readfilter2fromDB(filter);
     selectedKorpus = [];
     let checkboxes = document.querySelectorAll('input[name=korpus]:checked');
     let allCheckboxes = document.querySelectorAll('input[name=korpus]');
@@ -329,17 +338,19 @@ async function updateKorpusCheckboxes() {
 // AJAX for fetching data from SELECTED korpuses
 async function fetchSome() {
     console.log(selectedKorpus.join())
-    console.log(selectedKorpus)
+    console.log("KORPUS " + selectedKorpus)
     let result;
     let lcValues = [];
-    console.log("DO I EXIST " + availableValues)
-    availableValues.forEach((e) => {
-        if (e == "TUNDMATU") {
+    console.log("available v" + availableValues)
+    console.log("DO I EXIST " + selectedValues)
+    selectedValues.forEach((e) => {
+        if (e == "tundmatu" && selectedValues.length != 0) {
             lcValues.splice(0, 0, "");
         } else {
             lcValues.push(e.toLowerCase());
         }
     });
+    console.log("sv " + selectedValues.length)
 
     try {
         result = await $.ajax({
