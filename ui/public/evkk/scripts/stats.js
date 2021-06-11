@@ -556,7 +556,6 @@ function loadStats(data) {
                 //show: false,
                 type: 'value',
                 name: '',
-                
                 position: 'right',
                 axisLine: {
                     show: true,
