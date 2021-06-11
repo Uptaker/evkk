@@ -429,27 +429,29 @@ input[type="checkbox"] {
 }
 
 #help-toggle{
-	font-family: 'Merriweather', serif;
-    border: none;
-    display: flex;
-    height: 15%;
+	/* font-family: 'Merriweather', serif; */
+    /* border: none; */
+    /* display: flex; */
+    /* height: 15%; */
     position: relative;
-    background-color: #78B978;
+    /* background-color: #78B978; */
     color: rgb(37, 63, 47);
-    font-weight: bold;
-    padding: 20px;
+    /* font-weight: bold; */
+    /* padding: 20px; */
     margin-left: auto; 
     margin-right: 1%;
     margin-bottom: 1%;
     margin-top: auto;
     cursor: pointer;
     transition: all 0.2s;
-    border-radius: 5px;
-    font-size: 16px;
+    /* border-radius: 5px; */
+    font-size: 54px;
+    transition: 0.2s all;
 }
 
 #help-toggle:hover{
-    background-color: rgb(142, 201, 142);
+    color:rgb(58, 95, 58);
+    transform: scale(1.1);
 }
 
 :root {

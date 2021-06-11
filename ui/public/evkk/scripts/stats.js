@@ -6,6 +6,7 @@ let knames = []; // every selected korpus name
 let filter;
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
+let isHelpOn = true;
 
 // On page load
 $(document).ready(async function () {
@@ -42,7 +43,7 @@ function showDefault() {
 }
 
 function show(){
-    if(helpToggle.innerText == ('Peida abi')){
+    if(isHelpOn){
 
 
         $("#selectAllKorpus").removeAttr('aria-label data-balloon-pos class')
@@ -52,10 +53,11 @@ function show(){
         $("#words2").removeAttr('aria-label data-balloon-pos class')
         $("#sentences2").removeAttr('aria-label data-balloon-pos class')
         $("#pede").removeAttr('aria-label data-balloon-pos class')
-        helpToggle.innerText = 'Kuva abi';
+        helpToggle.style.color = 'rgb(213, 237, 219)';
+        isHelpOn = false;
 
     } else {
-        helpToggle.innerText = 'Peida abi';
+        helpToggle.style.color = 'rgb(37, 63, 47)';
         
         $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
         $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
@@ -64,7 +66,7 @@ function show(){
         $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
         $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
         $("#pede").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
-
+        isHelpOn = true;
 
     }
 }
