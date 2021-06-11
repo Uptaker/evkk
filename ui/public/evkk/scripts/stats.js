@@ -481,10 +481,11 @@ function loadStats(data) {
 
         tooltip: {
             trigger: 'axis',
-            axisPointer: {
-                type: 'cross'
-            }
+            // axisPointer: {
+            //     type: 'cross'
+            // }
         },
+
         grid: {
             containLabel: true,
             width: "auto",
@@ -531,104 +532,117 @@ function loadStats(data) {
         ],
         yAxis: [
             {
-                // show: false,
+                //show: false,
                 type: 'value',
-                name: 'Protsent',
+                name: '',
+                
                 position: 'right',
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: colors[0],
+                        color: colors[1],
                         fontSize: 18
                     }
                 },
                 axisLabel: {
-                    // containLabel: true,
-                    formatter: '{value} %'
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
                 }
             },
             {
-                show: false,
+                //show: false,
                 type: 'value',
-                name: 'Tekste',
+                name: '',
+                
                 position: 'right',
-                offset: 45,
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: colors[1]
+                        color: colors[1],
+                        fontSize: 18
                     }
                 },
                 axisLabel: {
-                    // containLabel: true,
-                    formatter: '{value}'
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
                 }
             },
             {
-                show: false,
+                //show: false,
                 type: 'value',
-                name: 'Sõnu',
+                name: '',
+                
                 position: 'right',
-                offset: 105,
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        containLabel: true,
-                        color: colors[2]
+                        color: colors[1],
+                        fontSize: 18
                     }
                 },
                 axisLabel: {
-                    formatter: '{value}'
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
                 }
             },
             {
-                show: false,
+                //show: false,
                 type: 'value',
-                name: 'Lauseid',
-                position: 'left',
+                name: '',
+                
+                position: 'right',
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: colors[3]
-                    }
-                },
-                // axisLabel: {
-                //     containLabel: true,
-                //     formatter: '{value}'
-                // }
-            },
-            {
-                show: false,
-                type: 'value',
-                name: 'Vigu',
-                position: 'left',
-                offset: 75,
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[4]
+                        color: colors[1],
+                        fontSize: 18
                     }
                 },
                 axisLabel: {
-                    containLabel: true,
-                    formatter: '{value}'
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
                 }
             },
             {
-                show: false,
+                //show: false,
                 type: 'value',
-                name: 'Veatüüpe',
-                position: 'left',
-                offset: 145,
+                name: '',
+                
+                position: 'right',
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: colors[5]
+                        color: colors[1],
+                        fontSize: 18
                     }
                 },
                 axisLabel: {
-                    containLabel: true,
-                    formatter: '{value}'
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
+                }
+            },
+            {
+                //show: false,
+                type: 'value',
+                name: '',
+                
+                position: 'right',
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: colors[1],
+                        fontSize: 18
+                    }
+                },
+                axisLabel: {
+                    show: false,
+                    //containLabel: true,
+                    formatter: ''
                 }
             }
         ],
@@ -672,4 +686,3 @@ function loadStats(data) {
     };
     option && myChart.setOption(option);
 }
-
