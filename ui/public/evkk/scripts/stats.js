@@ -53,7 +53,7 @@ function show(){
         $("#words2").removeAttr('aria-label data-balloon-pos class')
         $("#sentences2").removeAttr('aria-label data-balloon-pos class')
         $("#pede").removeAttr('aria-label data-balloon-pos class')
-        helpToggle.style.color = 'rgb(213, 237, 219)';
+        helpToggle.style.color = 'rgb(105, 173, 105';
         isHelpOn = false;
 
     } else {
