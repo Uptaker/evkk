@@ -12,7 +12,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-06-11T13:27:33+0300",
+    date = "2021-06-14T11:22:25+0300",
     comments = "version: 1.3.0.Final, compiler: javac, environment: Java 11.0.11 (Ubuntu)"
 )
 public class ApiMapperImpl extends ApiMapper {
