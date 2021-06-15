@@ -2,7 +2,7 @@
 let selectedKorpus = []; // every selected korpus
 let selectedValues = []; // every selected value (väärtus)
 let selectedFilters = [];
-let filter = [];
+let filter;
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
 let isHelpOn = true;
@@ -58,32 +58,45 @@ async function fetchDetailed() {
     });
     let filterNames = [];
     let filterValues = [];
-    for (filter of selectedFilters) {
-        filterNames.push(filter.filter);
-        filterValues.push(filter.data);
+    for (f of selectedFilters) {
+        filterNames.push(f.filter);
+        filterValues.push(f.data);
     }
+
+    let data = {
+        corpus: selectedKorpus,
+        pName: filter,
+        pValue: lcValues,
+        selectedFilters: selectedFilters
+    }
+
 
     try {
         if (selectedKorpus.join().length == 0) {
             document.querySelector('#alamkorpused').style.display = 'none'
         } else {
             result = await $.ajax({
-                url: "/api/texts/getDetailedValues?",
+                // url: "/api/texts/detailedSearch?data=",
+                url: "/api/texts/detailedSearch?data=" + encodeURI(JSON.stringify(data)),
                 type: "GET",
-                data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join(), filterNames: filterNames.join(), filterValues: filterValues.join()},
-                // dataType: 'JSON'
+                // data: { corpus: selectedKorpus, pName: filter, pValue: lcValues, filterNames: filterNames, filterValues: filterValues},
+                // data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: "application/json",
             });
-            loadStats(JSON.parse(result));
+            // loadStats(JSON.parse(result));
             console.log("ajax successful, parsed data: " + result)
             // document.querySelector('#alamkorpused').style.display = 'block'
         }
 
     } catch (error) {
         console.error(error);
-        console.log("error data: " + selectedKorpus.join());
+        // console.log(data)
     }
-    console.log("SENT: " + filterNames.join())
-    console.log(filterValues)
+    console.log("ATTEMPTING TO SEND:")
+    console.log(data)
+    console.log(filter)
+    console.log("/api/texts/detailedSearch?data=" + encodeURI(JSON.stringify(data)))
 }
 
 
@@ -201,7 +214,7 @@ async function addValueSelection() {
         document.querySelector("#filtersDetailed").insertAdjacentHTML( 'beforeend', collapsable );
     }
     initCollapsable();
-    // await fetchDetailed()
+    await fetchDetailed()
 
 
 }
