@@ -44,128 +44,158 @@
 
 					<button type="button" class="collapsible">Alamkorpused</button>
 					<div class="content">
-											<!-- Buttons to check or uncheck everything -->
-					<div id="buttons">
-						<button type="button" id="selectAllKorpus">Kõik</button>
-						<button type="button" id="unselectAllKorpus">Eemalda</button>
-					</div>
-					<!-- Korpus selection -->
-					<div id="korpusSelection">
-						<input type="checkbox" name="korpus"
-						value="cFqPphvYi" class="btn-check" id="btn-check0" autocomplete="off" checked/>
-						<label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Eesti keele olümpiaadi tööd</span></label>
-						
-						<input type="checkbox" name="korpus"
-						value="cwUSEqQLt" type="checkbox" class="btn-check" id="btn-check2" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check2"><i class="fas fa-check"></i></i><span>Akadeemiline õppijakeel</span></label>
-						
-						<input type="checkbox" name="korpus"
-						value="cwUprXCTL" class="btn-check" id="btn-check3" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check3"><i class="fas fa-check"></i><span>Eesti teaduskeel</span></label>
-	
-						<input type="checkbox" name="korpus"
-						value="cFOoRQekA" class="btn-check" id="btn-check4" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check4"><i class="fas fa-check"></i><span>EVKK tuumkorpus</span></label>
-	
-						<input type="checkbox" name="korpus"
-						value="clWmOIrLa" class="btn-check" id="btn-check5" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check5"><i class="fas fa-check"></i><span>REKKi kogud</span></label>
-	
-						<input type="checkbox" name="korpus"
-						value="cZjHWUPtD" class="btn-check" id="btn-check6" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check6"><i class="fas fa-check"></i><span>Vene keel kui võõrkeel</span></label>
-	
-						<input type="checkbox" name="korpus"
-						value="cgSRJPKTr" class="btn-check" id="btn-check7" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check7"><i class="fas fa-check"></i><span>Vene keel kui emakeel</span></label>
-	
-						<input type="checkbox" name="korpus"
-						value="cYDRkpymb" class="btn-check" id="btn-check8" autocomplete="off" checked/>
-						<label class="checkbox"  for="btn-check8"><i class="fas fa-check"></i><span>K1 referentskorpus</span></label>
-					</div>
+						<!-- Buttons to check or uncheck everything -->
+						<div id="buttons">
+							<button type="button" id="selectAllKorpus">Kõik</button>
+							<button type="button" id="unselectAllKorpus">Eemalda</button>
+						</div>
+						<!-- Korpus selection -->
+						<div id="korpusSelection">
+							<input type="checkbox" name="korpus"
+							value="cFqPphvYi" class="btn-check" id="btn-check0" autocomplete="off" checked/>
+							<label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Eesti keele olümpiaadi tööd</span></label>
+							
+							<input type="checkbox" name="korpus"
+							value="cwUSEqQLt" type="checkbox" class="btn-check" id="btn-check2" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check2"><i class="fas fa-check"></i></i><span>Akadeemiline õppijakeel</span></label>
+							
+							<input type="checkbox" name="korpus"
+							value="cwUprXCTL" class="btn-check" id="btn-check3" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check3"><i class="fas fa-check"></i><span>Eesti teaduskeel</span></label>
+		
+							<input type="checkbox" name="korpus"
+							value="cFOoRQekA" class="btn-check" id="btn-check4" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check4"><i class="fas fa-check"></i><span>EVKK tuumkorpus</span></label>
+		
+							<input type="checkbox" name="korpus"
+							value="clWmOIrLa" class="btn-check" id="btn-check5" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check5"><i class="fas fa-check"></i><span>REKKi kogud</span></label>
+		
+							<input type="checkbox" name="korpus"
+							value="cZjHWUPtD" class="btn-check" id="btn-check6" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check6"><i class="fas fa-check"></i><span>Vene keel kui võõrkeel</span></label>
+		
+							<input type="checkbox" name="korpus"
+							value="cgSRJPKTr" class="btn-check" id="btn-check7" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check7"><i class="fas fa-check"></i><span>Vene keel kui emakeel</span></label>
+		
+							<input type="checkbox" name="korpus"
+							value="cYDRkpymb" class="btn-check" id="btn-check8" autocomplete="off" checked/>
+							<label class="checkbox"  for="btn-check8"><i class="fas fa-check"></i><span>K1 referentskorpus</span></label>
+						</div>
 					</div>
 
 					
 				</form>
 
 				<!-- Filter selection -->
-			<div id="filterlife">
-				<h2>Filter</h2>
+				<h2>Kuva</h2>
 				<div id="pede">
-				<button type="button" class="collapsible">Isiku filtrid</button>
+				<select id="filterBy" name="filterBy">
+					<option value="vanus">Vanus</option>
+					<option value="haridus">Haridus</option>
+					<option value="sugu">Sugu</option>
+					<option value="elukoht">Elukoht</option>
+					<option value="kodukeel">Kodune keel</option>
+					<option value="emakeel">Emakeel</option>
+					<option value="tekstikeel">Tekstikeel</option>
+					<option value="abivahendid">Abivahendid</option>
+					<option value="taust">Sotsiaalne staatus</option>
+					<option value="keeletase">Keele valdamise tase</option>
+					<option value="tekstityyp">Tekstitüüp</option>
+				</select>
+				</div>
+
+				<button type="button" class="collapsible">Kuvatud väärtused</button>
 				<div class="content">
-					<div id="filterBy">
-						<input type="checkbox" name="filterBy"
-						value="vanus" class="btn-check" id="btn-check0" autocomplete="off" checked/>
-						<label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Vanus</span></label>
+					<div id="filters">
+						<form>
+							<!-- Buttons to check or uncheck everything -->
+							<div id="buttons">
+								<button type="button" id="selectAllChoices">Kõik</button>
+								<button type="button" id="unselectAllChoices">Eemalda</button>
+							</div>
+		
+							<!-- Korpus selection -->
+							<div id="SecondFilterSelection">
+		
+							</div>
+						</form>
+						</div>
+				</div>
+
+
+			<div id="filterlife">
+				<h2>Kitsendused</h2>
+				<div id="pede">
+
+				<!-- Author filters -->
+				<button type="button" class="collapsible">Isiku andmed</button>
+				<div class="content">
+					<div id="authorFilter">
+						<input type="checkbox" name="filterDetailed"
+						value="vanus" class="btn-check" id="f-check0" autocomplete="off" checked/>
+						<label class="checkbox" for="f-check0"><i class="fas fa-check"></i><span>Vanus</span></label>
 						
-						<input type="checkbox" name="filterBy"
-						value="haridus" type="checkbox" class="btn-check" id="btn-check2" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check2"><span>Haridus</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="haridus" type="checkbox" class="btn-check" id="f-check1" autocomplete="off"/>
+						<label class="checkbox"  for="f-check1"><i class="fas fa-check hidden"></i><span>Haridus</span></label>
 						
-						<input type="checkbox" name="filterBy"
-						value="sugu" class="btn-check" id="btn-check3" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check3"><span>Sugu</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="sugu" class="btn-check" id="f-check2" autocomplete="off"/>
+						<label class="checkbox"  for="f-check2"><i class="fas fa-check hidden"></i><span>Sugu</span></label>
 	
-						<input type="checkbox" name="filterBy"
-						value="elukoht" class="btn-check" id="btn-check4" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check4"><span>Elukoht</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="elukoht" class="btn-check" id="f-check3" autocomplete="off"/>
+						<label class="checkbox"  for="f-check3"><i class="fas fa-check hidden"></i><span>Elukoht</span></label>
 	
-						<input type="checkbox" name="filterBy"
-						value="kodukeel" class="btn-check" id="btn-check5" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check5"><span>Kodukeel</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="kodukeel" class="btn-check" id="f-check4" autocomplete="off"/>
+						<label class="checkbox"  for="f-check4"><i class="fas fa-check hidden"></i><span>Kodukeel</span></label>
 	
-						<input type="checkbox" name="filterBy"
-						value="emakeel" class="btn-check" id="btn-check6" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check6"><span>Emakeel</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="emakeel" class="btn-check" id="f-check5" autocomplete="off"/>
+						<label class="checkbox"  for="f-check5"><i class="fas fa-check hidden"></i><span>Emakeel</span></label>
 	
-						<input type="checkbox" name="filterBy"
-						value="taust" class="btn-check" id="btn-check7" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check7"><span>Sotsiaalne staatus</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="taust" class="btn-check" id="f-check6" autocomplete="off"/>
+						<label class="checkbox"  for="f-check6"><i class="fas fa-check hidden"></i><span>Sotsiaalne staatus</span></label>
 					</div>
 				</div>
 				
-				<button type="button" class="collapsible">Teksti filtrid</button>
+				<!-- Text filters -->
+				<button type="button" class="collapsible">Teksti andmed</button>
 				<div class="content">
 					<!-- Tekst -->
-					<div id="filterBy">
-						<input type="checkbox" name="filterBy"
-						value="tekstikeel" class="btn-check" id="btn-check0" autocomplete="off" checked/>
-						<label class="checkbox" for="btn-check0"><i class="fas fa-check"></i><span>Tekstikeel</span></label>
+					<div id="textFilter">
+						<input type="checkbox" name="filterDetailed"
+						value="tekstikeel" class="btn-check" id="f-check7" autocomplete="off" checked/>
+						<label class="checkbox" for="f-check7"><i class="fas fa-check hidden"></i><span>Tekstikeel</span></label>
 						
-						<input type="checkbox" name="filterBy"
-						value="abivahendid" type="checkbox" class="btn-check" id="btn-check2" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check2"></i><span>Abivahendid</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="abivahendid" type="checkbox" class="btn-check" id="f-check8" autocomplete="off"/>
+						<label class="checkbox"  for="f-check8"><i class="fas fa-check hidden"></i><span>Abivahendid</span></label>
 						
-						<input type="checkbox" name="filterBy"
-						value="keeletase" class="btn-check" id="btn-check3" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check3"><span>Keele valdamise tase</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="keeletase" class="btn-check" id="f-check9" autocomplete="off"/>
+						<label class="checkbox"  for="f-check9"><i class="fas fa-check hidden"></i><span>Keele valdamise tase</span></label>
 
-						<input type="checkbox" name="filterBy"
-						value="tekstityyp" class="btn-check" id="btn-check4" autocomplete="off"/>
-						<label class="checkbox"  for="btn-check4"><span>Tekstitüüp</span></label>
+						<input type="checkbox" name="filterDetailed"
+						value="tekstityyp" class="btn-check" id="f-check10" autocomplete="off"/>
+						<label class="checkbox"  for="f-check10"><i class="fas fa-check hidden"></i><span>Tekstitüüp</span></label>
 					</div>
 				</div>
 			</div>
 
 			</div>
-				<div id="filters">
-				<h2>Väärtused</h2>
+				<!-- Value filters -->
+				<h2>Kitsendatud väärtused</h2>
 				<form>
-					<!-- Buttons to check or uncheck everything -->
-					<div id="buttons">
-						<button type="button" id="selectAllChoices">Kõik</button>
-						<button type="button" id="unselectAllChoices">Eemalda</button>
-					</div>
+				<div id="filtersDetailed">
 
-					<!-- Korpus selection -->
-					<div id="SecondFilterSelection">
-
-					</div>
-				</form>
 				</div>
-			
-		</div>
+				</form>
+			</div>
 
 		<!-- Stats (right side) -->
 		<div class="stats">

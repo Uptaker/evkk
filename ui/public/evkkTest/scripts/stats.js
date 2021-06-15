@@ -1,53 +1,210 @@
-
 // global variables
 let selectedKorpus = []; // every selected korpus
 let selectedValues = []; // every selected value (väärtus)
-let knames = []; // every selected korpus name
-let filter;
+let selectedFilters = [];
+let filter = [];
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
 let isHelpOn = true;
 
 // On page load
 $(document).ready(async function () {
-
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
-    
-    for (i = 0; i < coll.length; i++) {
-      coll[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
-    }
+    initCollapsable();
 
 
+    updateFilters();
 
     filter = document.querySelector("#filterBy").value; // current filter
     // initial fetchers on page load, to display stats
-    // main stats
-    // readfilter2fromDB(filter);
+
     await updateFilter();
     await updateKorpusCheckboxes();
-    // show()
-    // await fetchAll();
-    // await fetchMiniStats();
+
 
     showDefault();
     // event listeners
     document.querySelectorAll('input[name=korpus]')
         .forEach(el => el
             .addEventListener('click', updateKorpusCheckboxes));
+    document.querySelectorAll('input[name=filterDetailed]')
+        .forEach(el => {
+            el.addEventListener('click', updateFilters)
+    });
     document.querySelector("#selectAllKorpus").addEventListener("click", selectKorpus);
     document.querySelector("#unselectAllKorpus").addEventListener("click", deselectKorpus);
+    helpToggle.addEventListener('click', show);
     document.querySelector("#filterBy").addEventListener("change", updateFilter);
-    helpToggle.addEventListener('click', show); 
+    await addValueSelection()
 });
+
+
+
+
+
+// AJAX for fetching data from SELECTED korpuses
+async function fetchDetailed() {
+    let result;
+    let lcValues = [];
+    selectedValues.forEach((e) => {
+        if (e == "tundmatu" && selectedValues.length != 0) {
+            lcValues.splice(0, 0, "");
+        } else {
+            if (filter == 'keeletase') {
+                lcValues.push(e.toUpperCase());
+            } else {
+                lcValues.push(e.toLowerCase());
+            }
+        }
+    });
+    let filterNames = [];
+    let filterValues = [];
+    for (filter of selectedFilters) {
+        filterNames.push(filter.filter);
+        filterValues.push(filter.data);
+    }
+
+    try {
+        if (selectedKorpus.join().length == 0) {
+            document.querySelector('#alamkorpused').style.display = 'none'
+        } else {
+            result = await $.ajax({
+                url: "/api/texts/getDetailedValues?",
+                type: "GET",
+                data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join(), filterNames: filterNames.join(), filterValues: filterValues.join()},
+                // dataType: 'JSON'
+            });
+            loadStats(JSON.parse(result));
+            console.log("ajax successful, parsed data: " + result)
+            // document.querySelector('#alamkorpused').style.display = 'block'
+        }
+
+    } catch (error) {
+        console.error(error);
+        console.log("error data: " + selectedKorpus.join());
+    }
+    console.log("SENT: " + filterNames.join())
+    console.log(filterValues)
+}
+
+
+
+
+// collapsable containers, contents are inside of class .content in html
+async function initCollapsable() { 
+    // let coll = document.getElementsByClassName("collapsible");
+    let coll = document.getElementsByClassName("collapsible");
+    
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            // this.classList.toggle("active");
+            // let content = this.nextElementSibling;
+            // if (content.style.display === "block") {
+            // content.style.display = "none";
+            // } else {
+            // content.style.display = "block";
+            // }
+            // console.log("CLICKED CLICKED CLICKED")
+            let content = this.nextElementSibling;
+            if (this.classList.contains("active")) {
+                content.style.display = "none";
+                this.classList.remove("active")
+            } else {
+                content.style.display = "block";
+                this.classList.add("active")
+            }
+            console.log("CLICKED CLICKED CLICKED")
+        });
+    }
+    getSelectedValues();
+}
+
+// [{filter: "vanus", data: vanused.join()}, {filter: "tekstikeel", data: tekstikeeled.join()}]
+
+async function updateFilters() {
+    selectedFilters = [];
+    let checkboxes = document.querySelectorAll('input[name=filterDetailed]:checked');
+    let allCheckboxes = document.querySelectorAll('input[name=filterDetailed]');
+    for (let i = 0; i < allCheckboxes.length; i++) {
+        let next = allCheckboxes[i].nextElementSibling.firstChild;
+        next.classList.add("hidden");
+    }
+    // if (checkboxes.length == 0 || selectedKorpus.length == 0) {
+    if (checkboxes.length == 0) {
+        for (i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+            let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
+        }
+        document.querySelector('#alamkorpused').style.display = 'none'
+    
+    } else {
+        for (let i = 0; i < checkboxes.length; i++) {
+            selectedFilters.push({filter: checkboxes[i].defaultValue, data: []});
+            console.log("pushed")
+            let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
+        }
+        document.querySelector('.echarts').style.display = 'block'
+    }
+    addValueSelection()
+}
+
+function getSelectedValues() {
+    for (let x = 0; x < selectedFilters.length; x++) {
+        selectedFilters[x].data = [];
+        let checkboxes = document.querySelectorAll(`input[name=filter-${selectedFilters[x].filter}]:checked`);
+        let allCheckboxes = document.querySelectorAll(`input[name=filter-${selectedFilters[x].filter}]`);
+        for (let i = 0; i < allCheckboxes.length; i++) {
+            let next = allCheckboxes[i].nextElementSibling.firstChild;
+            next.classList.add("hidden");
+        }
+        if (checkboxes.length == 0) {
+            for (i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+                let next = checkboxes[i].nextElementSibling.firstChild;
+                next.classList.remove("hidden");
+            }
+            document.querySelector('#alamkorpused').style.display = 'none'
+        
+        } else {
+            selectedFilters[x].data = [];
+            for (let i = 0; i < checkboxes.length; i++) {
+                selectedFilters[x].data.push(checkboxes[i].defaultValue);
+                let next = checkboxes[i].nextElementSibling.firstChild;
+                next.classList.remove("hidden");
+            }
+            document.querySelector('.echarts').style.display = 'block'
+        }
+        // selectedFilters.push(checkboxes[i].value);
+    }
+}
+
+// creates collapsable values selection list
+async function addValueSelection() {
+    document.querySelector("#filtersDetailed").innerHTML = "";
+    for (let i = 0; i < selectedFilters.length; i++) {
+        let data = "";
+        let filterValues = await fetchAvailableDetailedValues(selectedFilters[i].filter);
+        let collapsable = `<button type="button" class="collapsible">${selectedFilters[i].filter} väärtused</button>
+                            <div class="content"><div>`
+
+                                // <!-- Korpus selection -->
+        for (let x = 0; x < filterValues.length; x++) {
+            data += `
+            <input type="checkbox" name="filter-${selectedFilters[i].filter}"
+            value="${filterValues[x].toLowerCase()}" class="btn-check" id="${selectedFilters[i].filter}-check${x}" autocomplete="off" checked/>
+            <label class="checkbox" for="${selectedFilters[i].filter}-check${x}"><i class="fas fa-check"></i><span>${filterValues[x]}</span></label>
+            `
+        }
+        collapsable += data;
+        collapsable += `</div></div>`;
+        document.querySelector("#filtersDetailed").insertAdjacentHTML( 'beforeend', collapsable );
+    }
+    initCollapsable();
+    // await fetchDetailed()
+
+
+}
 
 function showDefault() {
     $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
@@ -93,7 +250,6 @@ async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetel
     var x = document.getElementById("filters");
     // availableValues = [];
     await fetchAvailableValues();
-    console.log(selectionimistasaab);
     var docFrag = document.createDocumentFragment();
 
     
@@ -139,7 +295,6 @@ async function readfilter2fromDB(selectionimistasaab) { // LOOME FILTER 2 LOetel
     document.querySelectorAll('input[name='+selectionimistasaab+']')
         .forEach(el => el
             .addEventListener('click', updateKorpusCheckboxes));
-    console.log("kuulan");
 
     document.querySelector("#selectAllChoices").addEventListener("click", selectFilter2Checkboxes);
     document.querySelector("#unselectAllChoices").addEventListener("click", deselectFilter2Checkboxes);
@@ -162,16 +317,13 @@ async function updateFilter2Checkboxes() {
             let next = checkboxes[i].nextElementSibling.firstChild;
         }
         document.querySelector('#alamkorpused').style.display = 'none'
-        console.log("removed chart");
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedValues.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
         }
         document.querySelector('.echarts').style.display = 'block'
-        console.log("added chart")
     }
-    console.log("LENGTH" + checkboxes.length)
 }
 
 // Checkbox style manipulation (checks everything), then fetches all stats
@@ -183,7 +335,6 @@ async function selectFilter2Checkboxes() {
         let next = checkboxes[i].nextElementSibling.firstChild;
         next.classList.remove("hidden");
         next.classList.remove("add");
-        console.log("added " + next);
     }
     updateKorpusCheckboxes();
 }
@@ -195,7 +346,6 @@ function deselectFilter2Checkboxes() {
         checkboxes[i].checked = false;
         let next = checkboxes[i].nextElementSibling.firstChild;
         next.classList.add("hidden");
-        console.log("removed " + next);
     }
     document.querySelector("#alamkorpused").style.display = 'none';
 }
@@ -212,13 +362,10 @@ async function fetchMiniStats() {
             type: "GET",
             data: { corpus: selectedKorpus.join() },
         });
-        console.log("ministats " + result)
         console.log("AJAX: Fetching selected korpus mini stats... " + JSON.stringify(result));
         loadMiniStats(JSON.parse(result));
-        console.log("ministats w0rk" + result)
     } catch (error) {
         console.error(error);
-        console.log("ministats FAIL" + result)
     }
 }
 
@@ -301,11 +448,9 @@ async function selectKorpus() {
         let next = checkboxes[i].nextElementSibling.firstChild;
         next.classList.remove("hidden");
         next.classList.remove("add");
-        console.log("added " + next);
     }
     await updateKorpusCheckboxes();
     await fetchMiniStats();
-    console.log("selected")
 }
 
 // Checkbox style manipulation (unchecks everything)
@@ -315,9 +460,7 @@ function deselectKorpus() {
         checkboxes[i].checked = false;
         let next = checkboxes[i].nextElementSibling.firstChild;
         next.classList.add("hidden");
-        console.log("removed " + next);
     }
-    console.log("deselected")
     loadMiniStats(null);
     document.querySelector("#alamkorpused").style.display = 'none';
 }
@@ -334,7 +477,6 @@ async function updateKorpusCheckboxes() {
         next.classList.add("hidden");
     }
     if (checkboxes.length == 0) {
-        knames = [];
         for (i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = true;
             let next = checkboxes[i].nextElementSibling.firstChild;
@@ -371,34 +513,11 @@ async function updateKorpusCheckboxes() {
 //     }
 // }
 
-// AJAX for fetching data from ALL korpuses
-// async function fetchAll() {
-//     console.log(selectedKorpus.join())
-//     console.log(selectedKorpus)
-//     let result;
-//     try {
-//         result = await $.ajax({
-//             url: "/api/texts/getDetailedValues",
-//             type: "GET",
-//             data: { corpus: 'cFqPphvYi', pName: "vanus"},
-//             // dataType: 'JSON',
-//         });
-//         // loadStats(result);
-//         console.log("WORKING" + JSON.stringify(result));
-//     } catch (error) {
-//         console.error(error);
-//         console.log("NOT WORKING" + JSON.stringify(result));
-//     }
-// }
 
 // AJAX for fetching data from SELECTED korpuses
 async function fetchSome() {
-    console.log(selectedKorpus.join())
-    console.log("KORPUS " + selectedKorpus)
     let result;
     let lcValues = [];
-    console.log("available v" + availableValues)
-    console.log("DO I EXIST " + selectedValues)
     selectedValues.forEach((e) => {
         if (e == "tundmatu" && selectedValues.length != 0) {
             lcValues.splice(0, 0, "");
@@ -410,7 +529,6 @@ async function fetchSome() {
             }
         }
     });
-    console.log("sv " + selectedValues.length)
 
     try {
         if (selectedKorpus.join().length == 0) {
@@ -422,10 +540,8 @@ async function fetchSome() {
                 data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join() },
                 // dataType: 'JSON'
             });
-            console.log("AAAAAAA " + lcValues.join());
             loadStats(JSON.parse(result));
             console.log("ajax successful, parsed data: " + result)
-            console.log(lcValues)
             // document.querySelector('#alamkorpused').style.display = 'block'
         }
 
@@ -433,12 +549,10 @@ async function fetchSome() {
         console.error(error);
         console.log("error data: " + selectedKorpus.join());
     }
-    console.log("TEST " + lcValues.join())
 }
 
 async function fetchAvailableValues() {
     let result;
-    document.getElementById('SecondFilterSelection').innerHTML="";
     availableValues = [];
     try {
         result = await $.ajax({
@@ -459,6 +573,33 @@ async function fetchAvailableValues() {
         console.log("available values: " + availableValues);
     } catch (error) {
         console.error(error);
+    }
+}
+
+async function fetchAvailableDetailedValues(filtered) {
+    let result;
+    returned = [];
+    try {
+        result = await $.ajax({
+            url: "/api/texts/getAvailableValues",
+            type: "GET",
+            data: { pName: filtered},
+        });
+
+        // turn available value data to list
+        JSON.parse(result).forEach((e) => {
+            if (e.value == "") {
+                returned.push("TUNDMATU");
+            } else {
+                returned.push(e.value
+                    .replace(/y/g, "ü").charAt(0).toUpperCase() + e.value.slice(1));
+            }
+        });
+        console.log("available values: " + returned);
+        return returned;
+    } catch (error) {
+        console.error(error);
+        return ["ERROR"]
     }
 }
 
@@ -548,7 +689,7 @@ function loadStats(data) {
         legend: {
             data: ['Protsent', 'Tekste', 'Sõnu', 'Lauseid', 'Vigu'],
             selected: {
-                'Protsent': true, 'Tekste': false, 'Sõnu': false,
+                'Protsent': false, 'Tekste': true, 'Sõnu': false,
                 'Lauseid': false, 'Vigu': false, 'Veatüüpe': false
             },
         },

@@ -49,7 +49,7 @@
         
         <!-- multiple tables JOIN -->
 
-        JOIN core.text_property as tp6 on tp5.text_id=tp6.text_id
+        <!-- JOIN core.text_property as tp6 on tp5.text_id=tp6.text_id -->
 
         WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
         #{cId}
@@ -61,7 +61,7 @@
 
         <!-- multiple tables WHERE -->
 
-        AND tp6.property_name = 'tekstityyp' AND tp6.property_value = 'essee'
+        <!-- AND tp6.property_name = 'tekstityyp' AND tp6.property_value = 'essee' -->
 
         GROUP BY tp2.property_name, tp2.property_value
         ) t

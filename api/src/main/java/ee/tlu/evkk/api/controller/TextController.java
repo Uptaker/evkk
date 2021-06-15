@@ -35,6 +35,13 @@ public class TextController {
         return textDao.findDetailedValueByPropertyName(pValueArray, pName, corpusArray);
     }
 
+    @GetMapping("/detailedSearch")
+    public String getValues(@RequestParam("corpus") String corpus, String pValue, String pName) {
+        String[] corpusArray = corpus.split(",");
+        String[] pValueArray = pValue.split(",");
+        return textDao.findDetailedValueByPropertyName(pValueArray, pName, corpusArray);
+    }
+
     @GetMapping("/getAvailableValues")
     public String getAvailableValues(String pName) {
         return textDao.findAvailableValues(pName);
