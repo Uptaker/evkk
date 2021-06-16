@@ -102,10 +102,22 @@ footer {
     border-top-left-radius: 5px;
 }
 
+.dropdown h4 {
+  text-align: left;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  width: 100%;
+}
+
 .radio {
   text-align: left;
   display: block;
   font-size: 13.33333;
+  background-color: rgb(105, 170, 105);
+  padding: 2px 5px;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 .radio tr {
@@ -113,12 +125,18 @@ footer {
 }
 .radio td {
   padding-bottom: 10px;
+  font-size: 13.33333px;
+  font-weight: bold;
 }
 
 input[type="radio"] {
   display: inline;
   text-align: left;
   width: 100%;
+  height: 100%;
+  margin: 0px;
+  min-height: 20px;
+  min-width: 20px;
 }
 
 .radio label {
