@@ -84,13 +84,14 @@ async function fetchDetailed() {
                 dataType: 'json',
                 contentType: "application/json",
             });
-            // loadStats(JSON.parse(result));
+            loadStats(result);
             console.log("ajax successful, parsed data: " + result)
             // document.querySelector('#alamkorpused').style.display = 'block'
         }
 
     } catch (error) {
         console.error(error);
+        console.log(result)
         // console.log(data)
     }
     console.log("ATTEMPTING TO SEND:")
@@ -101,34 +102,29 @@ async function fetchDetailed() {
 
 
 
-
 // collapsable containers, contents are inside of class .content in html
 async function initCollapsable() { 
-    // let coll = document.getElementsByClassName("collapsible");
     let coll = document.getElementsByClassName("collapsible");
+    for (e of coll) {
+        e.removeEventListener("click", toggleDropdown)
+    }
     
     for (let i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-            // this.classList.toggle("active");
-            // let content = this.nextElementSibling;
-            // if (content.style.display === "block") {
-            // content.style.display = "none";
-            // } else {
-            // content.style.display = "block";
-            // }
-            // console.log("CLICKED CLICKED CLICKED")
-            let content = this.nextElementSibling;
-            if (this.classList.contains("active")) {
-                content.style.display = "none";
-                this.classList.remove("active")
-            } else {
-                content.style.display = "block";
-                this.classList.add("active")
-            }
-            console.log("CLICKED CLICKED CLICKED")
-        });
+        coll[i].addEventListener("click", toggleDropdown);
     }
+    console.log(coll)
     getSelectedValues();
+}
+
+function toggleDropdown() {
+    this.classList.toggle("active");
+    let content = this.nextElementSibling;
+    if (content.style.display === "block") {
+    content.style.display = "none";
+    } else {
+    content.style.display = "block";
+    }
+    console.log("CLICKED CLICKED CLICKED")
 }
 
 // [{filter: "vanus", data: vanused.join()}, {filter: "tekstikeel", data: tekstikeeled.join()}]
@@ -212,11 +208,36 @@ async function addValueSelection() {
         collapsable += data;
         collapsable += `</div></div>`;
         document.querySelector("#filtersDetailed").insertAdjacentHTML( 'beforeend', collapsable );
+        document.querySelectorAll(`input[name=filter-${selectedFilters[i].filter}]`)
+        .forEach(el => el
+            .addEventListener('click', updateSelectedValues));
     }
     initCollapsable();
     await fetchDetailed()
+}
 
-
+async function updateSelectedValues() {
+    console.log("click");
+    let f = this.name.slice(7);
+    let index;
+    let filterIndex = 0;
+    // console.log(selectedFilters)
+    for (let i = 0; i < selectedFilters.length; i++) {
+        if (selectedFilters[i].filter == f) {
+            index = selectedFilters.indexOf(this.defaultValue);
+            filterIndex = i;
+        }
+    }
+    if (this.checked) {
+        console.log("ADDED" + this.defaultValue);
+        selectedFilters[filterIndex].data.push(this.defaultValue);
+        
+    } else {
+        console.log("REMOVED" + this.defaultValue);
+        selectedFilters[filterIndex].data.splice(index);
+    }
+    console.log("selected filter: " + this.name.slice(7));
+    await fetchDetailed();
 }
 
 function showDefault() {

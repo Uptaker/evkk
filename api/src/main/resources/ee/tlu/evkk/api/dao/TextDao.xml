@@ -2,7 +2,14 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ee.tlu.evkk.api.dao.TextDao">
+    <!-- <sql id="join">
+      
+        JOIN core.text_property as tp6 on tp4.text_id=tp5.text_id
+    </sql>
 
+    <sql id="condition">
+        #{condition}
+    </sql>   -->
 
   <select id="findMiniStats" resultType="java.lang.String">
        select array_to_json(array_agg(row_to_json(t)))
@@ -53,6 +60,8 @@
         <!-- multiple tables JOIN -->
 
         <!-- JOIN core.text_property as tp6 on tp5.text_id=tp6.text_id -->
+        ${join}
+        <!-- <include refid="join"/> -->
 
         WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
         #{cId}
@@ -65,6 +74,8 @@
         <!-- multiple tables WHERE -->
 
         <!-- AND tp6.property_name = 'tekstityyp' AND tp6.property_value = 'essee' -->
+        ${condition}
+        <!-- <include refid="condition"/> -->
 
         GROUP BY tp2.property_name, tp2.property_value
         ) t
