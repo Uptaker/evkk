@@ -102,6 +102,29 @@ footer {
     border-top-left-radius: 5px;
 }
 
+.radio {
+  text-align: left;
+  display: block;
+  font-size: 13.33333;
+}
+
+.radio tr {
+  padding: 10px;
+}
+.radio td {
+  padding-bottom: 10px;
+}
+
+input[type="radio"] {
+  display: inline;
+  text-align: left;
+  width: 100%;
+}
+
+.radio label {
+  text-align: left;
+}
+
 .logo img {
     max-width: 50px;
     height: auto;
@@ -120,10 +143,6 @@ footer {
 
 .dropdown * {
     width: 100%;
-}
-
-#filterBy option {
-    padding: 10px;
 }
 
 #korpusSelection {
@@ -370,7 +389,7 @@ label i {
     padding-right: 3px;
 }
 
-#filterBy {
+.list {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -384,20 +403,21 @@ label i {
     margin-bottom: 5px;
 }
 
-#filterBy:hover {
+.list:hover {
     background-color: rgb(179, 221, 179);
 }
 
 
-#filterBy option {
+.list option {
     background-color: white;
+    padding: 10px;
 }
 
-#filterBy option:checked {
+.list option:checked {
     background-color: rgb(191, 228, 189);
 }
 
-#filterBy option:hover {
+.list option:hover {
     background-color: rgb(124, 192, 122);
 }
 

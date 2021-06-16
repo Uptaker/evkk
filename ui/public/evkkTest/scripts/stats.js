@@ -6,10 +6,15 @@ let filter;
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
 let isHelpOn = true;
+let mode = "tulp";
+let selectedBy;
 
 // On page load
 $(document).ready(async function () {
     initCollapsable();
+
+    selectedBy = document.querySelector("#selectedValue").value;
+
 
 
     updateFilters();
@@ -63,11 +68,18 @@ async function fetchDetailed() {
         filterValues.push(f.data);
     }
 
+
     let data = {
         corpus: selectedKorpus,
         pName: filter,
         pValue: lcValues,
         selectedFilters: selectedFilters
+    }
+
+    if (document.querySelector("#tulp").checked) {
+        mode = "tulp";
+    } else if (document.querySelector("#sector").checked) {
+        mode = "pie";
     }
 
 
@@ -84,7 +96,12 @@ async function fetchDetailed() {
                 dataType: 'json',
                 contentType: "application/json",
             });
-            loadStats(result);
+            if (mode == "tulp") {
+                loadStats(result);
+            } else {
+                loadPie(result);
+            }
+
             console.log("ajax successful, parsed data: " + result)
             // document.querySelector('#alamkorpused').style.display = 'block'
         }
@@ -96,7 +113,6 @@ async function fetchDetailed() {
     }
     console.log("ATTEMPTING TO SEND:")
     console.log(data)
-    console.log(filter)
     console.log("/api/texts/detailedSearch?data=" + encodeURI(JSON.stringify(data)))
 }
 
@@ -108,11 +124,9 @@ async function initCollapsable() {
     for (e of coll) {
         e.removeEventListener("click", toggleDropdown)
     }
-    
     for (let i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", toggleDropdown);
     }
-    console.log(coll)
     getSelectedValues();
 }
 
@@ -124,7 +138,6 @@ function toggleDropdown() {
     } else {
     content.style.display = "block";
     }
-    console.log("CLICKED CLICKED CLICKED")
 }
 
 // [{filter: "vanus", data: vanused.join()}, {filter: "tekstikeel", data: tekstikeeled.join()}]
@@ -149,7 +162,6 @@ async function updateFilters() {
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedFilters.push({filter: checkboxes[i].defaultValue, data: []});
-            console.log("pushed")
             let next = checkboxes[i].nextElementSibling.firstChild;
             next.classList.remove("hidden");
         }
@@ -217,11 +229,9 @@ async function addValueSelection() {
 }
 
 async function updateSelectedValues() {
-    console.log("click");
     let f = this.name.slice(7);
     let index;
     let filterIndex = 0;
-    // console.log(selectedFilters)
     for (let i = 0; i < selectedFilters.length; i++) {
         if (selectedFilters[i].filter == f) {
             index = selectedFilters.indexOf(this.defaultValue);
@@ -229,14 +239,11 @@ async function updateSelectedValues() {
         }
     }
     if (this.checked) {
-        console.log("ADDED" + this.defaultValue);
         selectedFilters[filterIndex].data.push(this.defaultValue);
         
     } else {
-        console.log("REMOVED" + this.defaultValue);
         selectedFilters[filterIndex].data.splice(index);
     }
-    console.log("selected filter: " + this.name.slice(7));
     await fetchDetailed();
 }
 
@@ -430,6 +437,7 @@ function numberWithCommas(x) {
 // updates the stats title, beautifies them, then executes checkbox updater
 async function updateFilter() {
     filter = document.querySelector("#filterBy").value;
+    selectedBy = document.querySelector("#selectedValue").value;
     let beautify;
     switch (filter) {
         case "vanus":
@@ -526,8 +534,13 @@ async function updateKorpusCheckboxes() {
         }
     }
     await updateFilter2Checkboxes()
-    await fetchSome();
+    // await fetchSome();
+    await fetchDetailed();
     await fetchMiniStats();
+}
+
+function showActiveFilters() {
+
 }
 
 // fetches Korpus names, used in updateKorpusCheckboxes()
@@ -639,6 +652,7 @@ async function fetchAvailableDetailedValues(filtered) {
 
 // Echarts code
 function loadStats(data) {
+
     let ages = []
     let filterData = data;
 
@@ -660,18 +674,17 @@ function loadStats(data) {
     let sentences = [];
     let errors = [];
     let errorTypes = [];
+    let chartData = [];
+    console.log(document.querySelector("#selectedValue"))
+    console.log(document.querySelector("#selectedValue").getAttribute("data-name"));
     filterData.forEach((e) => {
-        percent.push(parseFloat(e.protsent).toFixed(2));
-        texts.push(e.tekste);
-        words.push(e.sonu);
-        sentences.push(e.lauseid);
-        errors.push(e.vigu);
-        errorTypes.push(e.veatyype);
+        chartData.push(e[selectedBy]);
     });
 
     // initialize chart
     let chartDom = document.getElementById('alamkorpused');
     let myChart = echarts.init(chartDom);
+    myChart.clear()
     let option;
 
     // colors
@@ -689,15 +702,15 @@ function loadStats(data) {
 
         title: {
             text: "Keelekorpus",
-            show: false
+            // show: true
         },
         calculatable: true,
 
         tooltip: {
             trigger: 'axis',
-            // axisPointer: {
-            //     type: 'cross'
-            // }
+            axisPointer: {
+                type: 'cross'
+            }
         },
 
         grid: {
@@ -720,13 +733,13 @@ function loadStats(data) {
                 },
             }
         },
-        legend: {
-            data: ['Protsent', 'Tekste', 'Sõnu', 'Lauseid', 'Vigu'],
-            selected: {
-                'Protsent': false, 'Tekste': true, 'Sõnu': false,
-                'Lauseid': false, 'Vigu': false, 'Veatüüpe': false
-            },
-        },
+        // legend: {
+        //     data: ['Protsent', 'Tekste', 'Sõnu', 'Lauseid', 'Vigu'],
+        //     selected: {
+        //         'Protsent': false, 'Tekste': true, 'Sõnu': false,
+        //         'Lauseid': false, 'Vigu': false, 'Veatüüpe': false
+        //     },
+        // },
         xAxis: [
             {
                 type: 'category',
@@ -746,7 +759,7 @@ function loadStats(data) {
         ],
         yAxis: [
             {
-                //show: false,
+                // show: false,
                 type: 'value',
                 name: '',
                 position: 'right',
@@ -861,41 +874,339 @@ function loadStats(data) {
         ],
         series: [
             {
-                name: 'Protsent',
-                type: 'bar',
-                data: percent,
-            },
-            {
-                name: 'Tekste',
+                name: selectedBy,
                 type: 'bar',
                 yAxisIndex: 1,
-                data: texts
-            },
-            {
-                name: 'Sõnu',
-                type: 'bar',
-                yAxisIndex: 2,
-                data: words
-            },
-            {
-                name: 'Lauseid',
-                type: 'bar',
-                yAxisIndex: 3,
-                data: sentences
-            },
-            {
-                name: 'Vigu',
-                type: 'bar',
-                yAxisIndex: 4,
-                data: errors
-            },
-            {
-                name: 'Veatüüpe',
-                type: 'bar',
-                yAxisIndex: 5,
-                data: errorTypes
+                data: chartData
             }
         ]
     };
+
     option && myChart.setOption(option);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function loadPie(data) {
+    let ages = []
+    let filterData = data;
+
+    // filter gained data
+    filterData.forEach((e) => {
+        if (e.value == "") {
+            ages.push("TUNDMATU");
+        } else {
+            ages.push(e.value
+                .replace(/y/g, "ü")
+                .toUpperCase());
+        }
+    });
+
+    // set categories for chart
+    let percent = [];
+    let texts = [];
+    let words = [];
+    let sentences = [];
+    let errors = [];
+    let errorTypes = [];
+    filterData.forEach((e) => {
+        percent.push(parseFloat(e.protsent).toFixed(2));
+        texts.push(e.tekste);
+        words.push(e.sonu);
+        sentences.push(e.lauseid);
+        errors.push(e.vigu);
+        errorTypes.push(e.veatyype);
+    });
+
+    // initialize chart
+    let chartDom = document.getElementById('alamkorpused');
+    let myChart = echarts.init(chartDom);
+    myChart.clear()
+    let option;
+
+    // colors
+    let colors = ['#5470C6', '#0e6e21', '#EE6666', '#411561',
+        '#61154a', '#8a3c0c'];
+
+    // responsive width
+    $(window).on('resize', function () {
+        myChart.resize();
+    });
+
+    // chart settings
+    option = {
+        tooltip: {
+            trigger: 'item'
+        },
+        toolbox: {
+            show: true,
+            left: "center",
+            bottom: "bottom",
+            color: '#333',
+            itemSize: 30,
+            itemGap: 100,
+            feature: {
+                dataView: { show: true, readOnly: true, title: "Andmed" },
+                saveAsImage: { show: true, title: "Laadi alla", color: "red" }
+            }
+        },
+        // legend: {
+        //     orient: 'vertical',
+        //     left: 'left',
+        // },
+        series: [
+            {
+                name: 'Protsent',
+                type: 'pie',
+                radius: '50%',
+                data: [
+                    {value: percent[0], name: ages[0]},
+                    {value: percent[1], name: ages[1]},
+                    {value: percent[2], name: ages[2]},
+                    {value: percent[3], name: ages[3]},
+                    {value: percent[4], name: ages[4]}
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    filter = document.querySelector("#selectedValue").value;
+    switch (filter) {
+        case "vigu":
+            option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                toolbox: {
+                    show: true,
+                    left: "center",
+                    bottom: "bottom",
+                    color: '#333',
+                    itemSize: 30,
+                    itemGap: 100,
+                    feature: {
+                        dataView: { show: true, readOnly: true, title: "Andmed" },
+                        saveAsImage: { show: true, title: "Laadi alla", color: "red" }
+                    }
+                },
+                // legend: {
+                //     orient: 'vertical',
+                //     left: 'left',
+                // },
+                series: [
+                    {
+                        name: 'Vigu',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: errors[0], name: ages[0]},
+                            {value: errors[1], name: ages[1]},
+                            {value: errors[2], name: ages[2]},
+                            {value: errors[3], name: ages[3]},
+                            {value: errors[4], name: ages[4]}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            break;
+        case "lauseid":
+            option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                toolbox: {
+                    show: true,
+                    left: "center",
+                    bottom: "bottom",
+                    color: '#333',
+                    itemSize: 30,
+                    itemGap: 100,
+                    feature: {
+                        dataView: { show: true, readOnly: true, title: "Andmed" },
+                        saveAsImage: { show: true, title: "Laadi alla", color: "red" }
+                    }
+                },
+                // legend: {
+                //     orient: 'vertical',
+                //     left: 'left',
+                // },
+                series: [
+                    {
+                        name: 'Lauseid',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: sentences[0], name: ages[0]},
+                            {value: sentences[1], name: ages[1]},
+                            {value: sentences[2], name: ages[2]},
+                            {value: sentences[3], name: ages[3]},
+                            {value: sentences[4], name: ages[4]}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            break;
+        case "s6nu":
+            option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                toolbox: {
+                    show: true,
+                    left: "center",
+                    bottom: "bottom",
+                    color: '#333',
+                    itemSize: 30,
+                    itemGap: 100,
+                    feature: {
+                        dataView: { show: true, readOnly: true, title: "Andmed" },
+                        saveAsImage: { show: true, title: "Laadi alla", color: "red" }
+                    }
+                },
+                // legend: {
+                //     orient: 'vertical',
+                //     left: 'left',
+                // },
+                series: [
+                    {
+                        name: 'S6nu',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: words[0], name: ages[0]},
+                            {value: words[1], name: ages[1]},
+                            {value: words[2], name: ages[2]},
+                            {value: words[3], name: ages[3]},
+                            {value: words[4], name: ages[4]}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            break;
+        case "tekste":
+            option = {
+                tooltip: {
+                    trigger: 'item'
+                },
+                toolbox: {
+                    show: true,
+                    left: "center",
+                    bottom: "bottom",
+                    color: '#333',
+                    itemSize: 30,
+                    itemGap: 100,
+                    feature: {
+                        dataView: { show: true, readOnly: true, title: "Andmed" },
+                        saveAsImage: { show: true, title: "Laadi alla", color: "red" }
+                    }
+                },
+                // legend: {
+                //     orient: 'vertical',
+                //     left: 'left',
+                // },
+                series: [
+                    {
+                        name: 'Tekste',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: texts[0], name: ages[0]},
+                            {value: texts[1], name: ages[1]},
+                            {value: texts[2], name: ages[2]},
+                            {value: texts[3], name: ages[3]},
+                            {value: texts[4], name: ages[4]}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            break;
+    }
+
+    option && myChart.setOption(option);
+
+
+    filter = document.querySelector("#filterBy").value;
+    let beautify;
+    switch (filter) {
+        case "vanus":
+            beautify = "vanuse";
+            break;
+        case "haridus":
+            beautify = "hariduse";
+            break;
+        case "sugu":
+            beautify = "soo";
+            break;
+        case "elukoht":
+            beautify = "elukoha";
+            break;
+        case "kodukeel":
+            beautify = "kodukeele";
+            break;
+        case "emakeel":
+            beautify = "emakeele";
+            break;
+        case "tekstikeel":
+            beautify = "tekstikeele";
+            break;
+        case "abivahendid":
+            beautify = "abivahendite";
+            break;
+        case "taust":
+            beautify = "sotsiaalse tausta";
+            break;
+        case "keeletase":
+            beautify = "keeletaseme";
+            break;
+        case "tekstikeel":
+            beautify = "tekstikeele";
+            break;
+        case "tekstityyp":
+            beautify = "tekstitüübi";
+            break;
+    }
+    document.querySelector(".stats h2").innerHTML = `Tekstid ${beautify} järgi`;
 }

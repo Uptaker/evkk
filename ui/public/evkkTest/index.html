@@ -41,7 +41,6 @@
 		<div class="dropdown">
 			<h2>Alamkorpused</h2>
 			<form>
-
 					<button type="button" class="collapsible">Alamkorpused</button>
 					<div class="content">
 						<!-- Buttons to check or uncheck everything -->
@@ -90,8 +89,34 @@
 
 				<!-- Filter selection -->
 				<h2>Kuva</h2>
+				<div class="radio">
+					<label for="sector">
+						
+						
+					</label><br>
+
+					<table style="width:100%">
+						<tr>
+							<td><input style="width:100%" type="radio" id="tulp" name="mode" value="tulp" onchange="fetchDetailed();" checked></td>
+							<td><label for="tulp">Tulpdiagramm</label></td>
+						</tr>
+						<tr>
+							<td><input style="width:100%" type="radio" id="sector" name="mode" value="pie" onchange="fetchDetailed();"></td>
+							<td><label for="sector">Sektordiagramm</label></td>
+						</tr>
+					  </table>
+
+				</div>
+
+				<select id="selectedValue" name="selectedValue" class="list" onchange="updateFilter()">
+					<option data-name="Tekste" value="tekste">Tekste</option>
+					<option data-name="Sõnu" value="sonu">Sõnu</option>
+					<option data-name="Lauseid" value="lauseid">Lauseid</option>
+					<option data-name="Vigu" value="vigu">Vigu</option>
+				</select>
+
 				<div id="pede">
-				<select id="filterBy" name="filterBy">
+				<select id="filterBy" name="filterBy" class="list">
 					<option value="vanus">Vanus</option>
 					<option value="haridus">Haridus</option>
 					<option value="sugu">Sugu</option>
@@ -201,6 +226,10 @@
 		<div class="stats">
 			<h2>Tekstid vanuse järgi</h2>
 			<div id="alamkorpused" class="echarts"></div>
+			<h3>Aktiivsed filtrid:</h3>
+			<div id="activeFilters">
+				<p id="kuvaFilter"></p>
+			</div>
 		</div>
 	</section>
 
