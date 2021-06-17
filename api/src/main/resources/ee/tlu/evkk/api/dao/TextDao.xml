@@ -93,7 +93,7 @@
 
 
 
-
+    <!-- Not used -->
     <select id="findDetailedValueByPropertyName" resultType="java.lang.String">
        select array_to_json(array_agg(row_to_json(t)))
         from (

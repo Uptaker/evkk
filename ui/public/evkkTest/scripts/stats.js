@@ -40,7 +40,7 @@ $(document).ready(async function () {
     document.querySelector("#unselectAllKorpus").addEventListener("click", deselectKorpus);
     helpToggle.addEventListener('click', show);
     document.querySelector("#filterBy").addEventListener("change", updateFilter);
-    await addValueSelection()
+    // await addValueSelection()
 });
 
 
@@ -116,7 +116,7 @@ async function initCollapsable() {
     for (let i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", toggleDropdown);
     }
-    getSelectedValues();
+    await getSelectedValues();
 }
 
 // toggles collapsible dropdown menu activity state, hides or unhides it.
@@ -154,12 +154,13 @@ async function updateFilters() {
         }
         document.querySelector('.echarts').style.display = 'block'
     }
-    addValueSelection()
+    await addValueSelection()
 }
 
-function getSelectedValues() {
+async function getSelectedValues() {
     for (let x = 0; x < selectedFilters.length; x++) {
         selectedFilters[x].data = [];
+        
         let checkboxes = document.querySelectorAll(`input[name=filter-${selectedFilters[x].filter}]:checked`);
         let allCheckboxes = document.querySelectorAll(`input[name=filter-${selectedFilters[x].filter}]`);
         for (let i = 0; i < allCheckboxes.length; i++) {
@@ -226,7 +227,6 @@ async function updateSelectedValues() {
     }
     if (this.checked) {
         selectedFilters[filterIndex].data.push(this.defaultValue);
-        console.log(selectedFilters[filterIndex].data);
         
     } else {
         selectedFilters[filterIndex].data.splice(index);

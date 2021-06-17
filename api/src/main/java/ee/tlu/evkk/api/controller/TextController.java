@@ -114,9 +114,6 @@ public class TextController {
             return "oops, ei tööta";
 
        }
-
-    //    System.out.println(JsonObject.getJSONObject("selectedFilters"));
-        // return textDao.detailedSearch(pValueArray, pName, corpusArray, filterNamesArray, filterValuesArray);
     }
 
     @GetMapping("/getAvailableValues")
