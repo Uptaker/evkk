@@ -178,7 +178,15 @@ async function getSelectedValues() {
         } else {
             selectedFilters[x].data = [];
             for (let i = 0; i < checkboxes.length; i++) {
-                selectedFilters[x].data.push(checkboxes[i].defaultValue);
+                if (selectedFilters[x].filter == "keeletase") {
+                    if (checkboxes[i].defaultValue == "tundmatu") {
+                        selectedFilters[x].data.push(checkboxes[i].defaultValue);
+                    } else {
+                        selectedFilters[x].data.push(checkboxes[i].defaultValue.toUpperCase());
+                    }
+                } else {
+                    selectedFilters[x].data.push(checkboxes[i].defaultValue);
+                }
                 let next = checkboxes[i].nextElementSibling.firstChild;
                 next.classList.remove("hidden");
             }
@@ -235,14 +243,16 @@ async function updateSelectedValues() {
 }
 
 function showDefault() {
+    $("#helpSecondFilterSelection").attr({"aria-label":"Saab valida, mis väärtused kuvatakse graafikus", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#helpKitsendused").attr({"aria-label":"Saab kitsendada andmeid mingi väärtuse järgi", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
-    $("#helpFiltersDetailed").attr({"aria-label":"Kuvab, mis väärtused kuvatakse", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#helpKitsendatudValues").attr({"aria-label":"Kuvab, mis väärtused kuvatakse", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#helpSelectedValue").attr({"aria-label":"Väärtus, mille järgi andmed filtreeritakse", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#radio").attr({"aria-label":"Siin saab valida kuvatud diagrammi tüübi", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#helpCorpus").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
     $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
-    $("#pede").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#helpFilterBy").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
 
 }
 
@@ -874,10 +884,13 @@ function loadPie(data) {
         case "vigu":
             option = {
                 title: {
-                    text: 'miks ei toota',
+                    text: title,
                     show: true,
                     left: 'center',
-                    x: 'center'
+                    textStyle: {
+                        fontSize: 22,
+                        fontFamily: 'Merriweather'
+                    }
                 },
                 tooltip: {
                     trigger: 'item'
@@ -920,10 +933,13 @@ function loadPie(data) {
         case "lauseid":
             option = {
                 title: {
-                    text: 'miks ei toota',
+                    text: title,
                     show: true,
                     left: 'center',
-                    x: 'center'
+                    textStyle: {
+                        fontSize: 22,
+                        fontFamily: 'Merriweather'
+                    }
                 },
                 tooltip: {
                     trigger: 'item'
