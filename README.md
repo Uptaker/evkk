@@ -152,7 +152,7 @@ cd evkk/evkk-main && yarn --cwd=./ui install && yarn --cwd=./ui start
 ```
 
 **Kui kõik käsud said sisestatud, siis veebileht peaks automaatselt avanema järgmisel aadressil:**
-localhost:3000/evkk
+localhost:3000/evkkTest
 
 
 
