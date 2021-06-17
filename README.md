@@ -1,6 +1,6 @@
 # Eesti Vahekeele Korpuse Interaktiivne statistika leht
 
-### Ekraanipilt: siis kui toode on valmis
+### Ekraanipilt:
 ![Tulpdiagramm](Pilt1.png "main")
 ![Sektordiagramm](Pilt2.png "main")
 
