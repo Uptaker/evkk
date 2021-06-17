@@ -1,7 +1,7 @@
 // global variables
 let selectedKorpus = []; // every selected korpus
 let selectedValues = []; // every selected value (väärtus)
-let selectedFilters = [];
+let selectedFilters = []; // kitsendused
 let filter;
 const helpToggle = document.getElementById('help-toggle');
 let availableValues = [];
@@ -70,6 +70,7 @@ async function fetchDetailed() {
         selectedFilters: selectedFilters
     }
 
+    // checks which chart mode is selected
     if (document.querySelector("#tulp").checked) {
         mode = "tulp";
     } else if (document.querySelector("#sector").checked) {
@@ -98,12 +99,10 @@ async function fetchDetailed() {
 
     } catch (error) {
         console.error(error);
-        console.log(result)
-        // console.log(data)
     }
-    console.log("ATTEMPTING TO SEND:")
+    console.log("ATTEMPTING TO SEND JSON:")
     console.log(data)
-    console.log("/api/texts/detailedSearch?data=" + encodeURI(JSON.stringify(data)))
+    showActiveFilters();
 }
 
 
@@ -139,7 +138,6 @@ async function updateFilters() {
         let next = allCheckboxes[i].nextElementSibling.firstChild;
         next.classList.add("hidden");
     }
-    // if (checkboxes.length == 0 || selectedKorpus.length == 0) {
     if (checkboxes.length == 0) {
         for (i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = true;
@@ -167,14 +165,12 @@ function getSelectedValues() {
         for (let i = 0; i < allCheckboxes.length; i++) {
             let next = allCheckboxes[i].nextElementSibling.firstChild;
             next.classList.add("hidden");
-            console.log("removed")
         }
         if (checkboxes.length == 0) {
             for (i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = true;
                 let next = checkboxes[i].nextElementSibling.firstChild;
                 next.classList.remove("hidden");
-                console.log("add")
             }
             document.querySelector('#alamkorpused').style.display = 'none'
         
@@ -184,7 +180,6 @@ function getSelectedValues() {
                 selectedFilters[x].data.push(checkboxes[i].defaultValue);
                 let next = checkboxes[i].nextElementSibling.firstChild;
                 next.classList.remove("hidden");
-                console.log("add")
             }
             document.querySelector('.echarts').style.display = 'block'
         }
@@ -197,7 +192,7 @@ async function addValueSelection() {
     for (let i = 0; i < selectedFilters.length; i++) {
         let data = "";
         let filterValues = await fetchAvailableDetailedValues(selectedFilters[i].filter);
-        let collapsable = `<button type="button" class="collapsible">${selectedFilters[i].filter} väärtused</button>
+        let collapsable = `<button type="button" class="collapsible"><p>${selectedFilters[i].filter} väärtused</p><i class="fas fa-chevron-down"></i></button>
                             <div class="content"><div>`
 
                                 // <!-- Korpus selection -->
@@ -239,10 +234,11 @@ async function updateSelectedValues() {
 }
 
 function showDefault() {
-    $("#selectAllKorpus").attr({"aria-label":"Valib kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
-    $("#unselectAllKorpus").attr({"aria-label":"Eemaldab kõik korpused", "data-balloon-pos":"up", "class":"tooltip-green"})
     $("#documents2").attr({"aria-label":"Dokumentide koguarv", "data-balloon-pos":"up", "class":"tooltip-green"})
-    $("#korpusSelection").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#helpFiltersDetailed").attr({"aria-label":"Kuvab, mis väärtused kuvatakse", "data-balloon-pos":"up", "class":"tooltip-green"})
+    $("#helpSelectedValue").attr({"aria-label":"Väärtus, mille järgi andmed filtreeritakse", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#radio").attr({"aria-label":"Siin saab valida kuvatud diagrammi tüübi", "data-balloon-pos":"right", "class":"tooltip-green"})
+    $("#helpCorpus").attr({"aria-label":"Korpused on töödeldud tekstide kogumid, mis on grupeeritud mingite kindlate kategooriate järgi.", "data-balloon-pos":"right", "class":"tooltip-green"})
     $("#words2").attr({"aria-label":"Sõnade kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
     $("#sentences2").attr({"aria-label":"Lausete kogu arv", "data-balloon-pos":"up", "class":"tooltip-green"})
     $("#pede").attr({"aria-label":"Siin saab täpsustada otsingut", "data-balloon-pos":"right", "class":"tooltip-green"})
@@ -396,7 +392,6 @@ async function fetchMiniStats() {
             type: "GET",
             data: { corpus: selectedKorpus.join() },
         });
-        console.log("AJAX: Fetching selected korpus mini stats... " + JSON.stringify(result));
         loadMiniStats(JSON.parse(result));
     } catch (error) {
         console.error(error);
@@ -519,7 +514,6 @@ function deselectKorpus() {
 // Collects every selected korpus checkbox, styles them and then fetches appropriate stats
 async function updateKorpusCheckboxes() {
     filter = document.querySelector("#filterBy").value;
-    // await readfilter2fromDB(filter);
     selectedKorpus = [];
     let checkboxes = document.querySelectorAll('input[name=korpus]:checked');
     let allCheckboxes = document.querySelectorAll('input[name=korpus]');
@@ -543,68 +537,23 @@ async function updateKorpusCheckboxes() {
         }
     }
     await updateFilter2Checkboxes()
-    // await fetchSome();
     await updateFilters();
     await fetchMiniStats();
 }
 
 function showActiveFilters() {
-
-}
-
-// fetches Korpus names, used in updateKorpusCheckboxes()
-// async function fetchKorpusNames(korpusCodes) {
-//     let result;
-//     try {
-//         result = await $.ajax({
-//             url: "db/server.php",
-//             type: "POST",
-//             data: { fetchKorpusName: true, selectedKorpus: korpusCodes },
-//             dataType: 'JSON',
-//         });
-//         console.log("AJAX: Fetching names...: " + result);
-//         return result;
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-
-// AJAX for fetching data from SELECTED korpuses
-async function fetchSome() {
-    let result;
-    let lcValues = [];
-    selectedValues.forEach((e) => {
-        if (e == "tundmatu" && selectedValues.length != 0) {
-            lcValues.splice(0, 0, "");
-        } else {
-            if (filter == 'keeletase') {
-                lcValues.push(e.toUpperCase());
-            } else {
-                lcValues.push(e.toLowerCase());
-            }
-        }
-    });
-
-    try {
-        if (selectedKorpus.join().length == 0) {
-            document.querySelector('#alamkorpused').style.display = 'none'
-        } else {
-            result = await $.ajax({
-                url: "/api/texts/getDetailedValues?",
-                type: "GET",
-                data: { corpus: selectedKorpus.join(), pName: filter, pValue: lcValues.join() },
-                // dataType: 'JSON'
-            });
-            loadStats(JSON.parse(result));
-            console.log("ajax successful, parsed data: " + result)
-            // document.querySelector('#alamkorpused').style.display = 'block'
-        }
-
-    } catch (error) {
-        console.error(error);
-        console.log("error data: " + selectedKorpus.join());
+    let activeFilters = document.querySelector("#activeFilters");
+    activeFilters.innerHTML = "";
+    let html = "";
+    html+= `<div class="activeFilterContainer"><p class="activeFilter"><b>Mille järgi:</b> ${filter}</p>`;
+    html+= `<p class="activeFilter"><b>Valitud väärtus:</b> ${selectedBy}</p>`;
+    html+= `<p class="activeFilter"><b>Kuvatud väärtused:</b> ${selectedValues.join()}</p>`;
+    for (let i = 0; i < selectedFilters.length; i++) {
+        html+= `<p class="activeFilter"><b>Kitsendus(${selectedFilters[i].filter}):</b> ${selectedFilters[i].data.join()}</p>`;
     }
+    html+= `</div>`
+
+    document.querySelector("#activeFilters").insertAdjacentHTML( 'beforeend', html );
 }
 
 async function fetchAvailableValues() {
@@ -626,7 +575,6 @@ async function fetchAvailableValues() {
                     .replace(/y/g, "ü").charAt(0).toUpperCase() + e.value.slice(1));
             }
         });
-        console.log("available values: " + availableValues);
     } catch (error) {
         console.error(error);
     }
@@ -651,7 +599,6 @@ async function fetchAvailableDetailedValues(filtered) {
                     .replace(/y/g, "ü").charAt(0).toUpperCase() + e.value.slice(1));
             }
         });
-        console.log("available values: " + returned);
         return returned;
     } catch (error) {
         console.error(error);
@@ -664,7 +611,7 @@ function loadStats(data) {
 
     let ages = []
     let filterData = data.sort(function(a, b){
-        return a[selectedBy] - b[selectedBy];
+        return b[selectedBy] - a[selectedBy];
     });;
 
     // filter gained data
@@ -679,12 +626,6 @@ function loadStats(data) {
     });
 
     // set categories for chart
-    let percent = [];
-    let texts = [];
-    let words = [];
-    let sentences = [];
-    let errors = [];
-    let errorTypes = [];
     let chartData = [];
     filterData.forEach((e) => {
         chartData.push(e[selectedBy]);
@@ -740,19 +681,8 @@ function loadStats(data) {
             feature: {
                 dataView: { show: true, readOnly: true, title: "Andmed" },
                 saveAsImage: { show: true, title: "Laadi alla", color: "red" },
-                magicType: {
-                    show: true,
-                    type: ['line', 'bar'],
-                },
             }
         },
-        // legend: {
-        //     data: ['Protsent', 'Tekste', 'Sõnu', 'Lauseid', 'Vigu'],
-        //     selected: {
-        //         'Protsent': false, 'Tekste': true, 'Sõnu': false,
-        //         'Lauseid': false, 'Vigu': false, 'Veatüüpe': false
-        //     },
-        // },
         xAxis: [
             {
                 type: 'category',
@@ -772,33 +702,33 @@ function loadStats(data) {
         ],
         yAxis: [
             {
-                // show: false,
                 type: 'value',
+                position: 'left'
             },
             {
-                //show: false,
                 type: 'value',
+                name: beautifySelected,
+                position: 'left'
+            },
+            {
+                type: 'value',
+                name: beautifySelected,
+                position: 'left'
+            },
+            {
+                type: 'value',
+                name: beautifySelected,
+                position: 'left'
+            },
+            {
+                type: 'value',
+                position: 'left',
                 name: beautifySelected,
             },
             {
-                //show: false,
                 type: 'value',
                 name: beautifySelected,
-            },
-            {
-                //show: false,
-                type: 'value',
-                name: beautifySelected,
-            },
-            {
-                //show: false,
-                type: 'value',
-                name: beautifySelected,
-            },
-            {
-                //show: false,
-                type: 'value',
-                name: beautifySelected,
+                position: 'left'
             }
         ],
         series: [
@@ -806,7 +736,13 @@ function loadStats(data) {
                 name: selectedBy,
                 type: 'bar',
                 yAxisIndex: 1,
-                data: chartData
+                data: chartData,
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'top'
+                      }
+                  }
             }
         ]
     };
@@ -822,7 +758,6 @@ function loadStats(data) {
             secondary.disabled = true;
             chartDom.style.width = (window.innerWidth-450)+'px';
             chartDom.style.height = (window.innerHeight-800)+'px';
-            console.log("olen väike");
             accsesebility.style.color = 'rgb(105, 173, 105';
             $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 700px;"})
             normalOn = false;
@@ -888,10 +823,6 @@ function loadPie(data) {
     myChart.clear()
     let option;
 
-    // colors
-    let colors = ['#5470C6', '#0e6e21', '#EE6666', '#411561',
-        '#61154a', '#8a3c0c'];
-
     // responsive width
     $(window).on('resize', function () {
         myChart.resize();
@@ -914,10 +845,6 @@ function loadPie(data) {
                 saveAsImage: { show: true, title: "Laadi alla", color: "red" }
             }
         },
-        // legend: {
-        //     orient: 'vertical',
-        //     left: 'left',
-        // },
         series: [
             {
                 name: 'Protsent',
@@ -940,6 +867,7 @@ function loadPie(data) {
             }
         ]
     };
+    // WHAT MONSTROSITY IS THIS, HANS??!
     filter = document.querySelector("#selectedValue").value;
     switch (filter) {
         case "vigu":
@@ -949,10 +877,6 @@ function loadPie(data) {
                     show: true,
                     left: 'center',
                     x: 'center'
-                    // textStyle: {
-                    //     fontSize: 22,
-                    //     fontFamily: 'Merriweather'
-                    // }
                 },
                 tooltip: {
                     trigger: 'item'
@@ -969,10 +893,6 @@ function loadPie(data) {
                         saveAsImage: { show: true, title: "Laadi alla", color: "red" }
                     }
                 },
-                // legend: {
-                //     orient: 'vertical',
-                //     left: 'left',
-                // },
                 series: [
                     {
                         name: 'Vigu',
@@ -1003,10 +923,6 @@ function loadPie(data) {
                     show: true,
                     left: 'center',
                     x: 'center'
-                    // textStyle: {
-                    //     fontSize: 22,
-                    //     fontFamily: 'Merriweather'
-                    // }
                 },
                 tooltip: {
                     trigger: 'item'
@@ -1023,10 +939,6 @@ function loadPie(data) {
                         saveAsImage: { show: true, title: "Laadi alla", color: "red" }
                     }
                 },
-                // legend: {
-                //     orient: 'vertical',
-                //     left: 'left',
-                // },
                 series: [
                     {
                         name: 'Lauseid',
@@ -1076,10 +988,6 @@ function loadPie(data) {
                         saveAsImage: { show: true, title: "Laadi alla", color: "red" }
                     }
                 },
-                // legend: {
-                //     orient: 'vertical',
-                //     left: 'left',
-                // },
                 series: [
                     {
                         name: 'Sõnu',
@@ -1129,10 +1037,6 @@ function loadPie(data) {
                         saveAsImage: { show: true, title: "Laadi alla", color: "red" }
                     }
                 },
-                // legend: {
-                //     orient: 'vertical',
-                //     left: 'left',
-                // },
                 series: [
                     {
                         name: 'Tekste',
@@ -1169,7 +1073,6 @@ function loadPie(data) {
             secondary.disabled = true;
             chartDom.style.width = (window.innerWidth-450)+'px';
             chartDom.style.height = (window.innerHeight-800)+'px';
-            console.log("olen väike");
             accsesebility.style.color = 'rgb(105, 173, 105';
             $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 700px;"})
             normalOn = false;

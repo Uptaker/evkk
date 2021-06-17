@@ -10,7 +10,7 @@ body {
   background-color: rgb(105, 170, 105);
   color: rgb(37, 63, 47);
   cursor: pointer;
-  padding: 10px 18px;
+  padding: 0px 18px;
   width: 100%;
   border: none;
   text-align: left;
@@ -21,6 +21,17 @@ body {
   font-weight: bold;
   margin: 10px 0;
   transition: 0.3s all;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapsible i {
+  text-align: right;
+}
+
+.collapsible p {
+  margin: 10px 0;
 }
 
 .active, .collapsible:hover {
@@ -31,6 +42,16 @@ body {
   display: none;
   overflow: hidden;
   background-color: rgb(142, 201, 142);
+}
+
+.activeFilter {
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: rgb(142, 201, 142);
+  font-size: 18px;
+  overflow-wrap: break-word;
+  display: inline-block;
 }
 
 nav {

@@ -36,6 +36,13 @@
 		</section>
 	</header>
 
+	<!-- Mini stats -->
+	<section class="miniStats">
+		<p id=documents2>Dokumente<br><span id="documents"></span></p>
+		<p id=sentences2>Lauseid<br><span id="sentences"></span></p>
+		<p id=words2>Sõnu<br><span id="words"></span></p>
+	</section>
+
 
 	<!-- Interactive stats section -->
 	<section>
@@ -43,8 +50,8 @@
 		<!-- Filters (left side) -->
 		<div class="dropdown">
 			<h2>Alamkorpused</h2>
-			<form>
-					<button type="button" class="collapsible">Alamkorpused</button>
+			<form id="helpCorpus">
+						<button type="button" class="collapsible"><p>Alamkorpused</p><i class="fas fa-chevron-down"></i></button>
 					<div class="content">
 						<!-- Buttons to check or uncheck everything -->
 						<div id="buttons">
@@ -94,7 +101,7 @@
 				<hr>
 				<h2>Kuva</h2>
 				<div class="radio">
-					<table style="width:100%">
+					<table id="radio" style="width:100%">
 						<tr>
 							<td><label for="tulp">Tulpdiagramm</label></td>
 							<td><input style="width:100%" type="radio" id="tulp" name="mode" value="tulp" onchange="fetchDetailed();" checked></td>
@@ -109,12 +116,14 @@
 				</div>
 
 				<h4>Vali väärtus</h4>
-				<select id="selectedValue" name="selectedValue" class="list" onchange="updateFilter()">
-					<option data-name="Tekste" value="tekste">Tekste</option>
-					<option data-name="Sõnu" value="sonu">Sõnu</option>
-					<option data-name="Lauseid" value="lauseid">Lauseid</option>
-					<option data-name="Vigu" value="vigu">Vigu</option>
-				</select>
+				<div id="helpSelectedValue">
+					<select id="selectedValue" name="selectedValue" class="list" onchange="updateFilter()">
+						<option data-name="Tekste" value="tekste">Tekste</option>
+						<option data-name="Sõnu" value="sonu">Sõnu</option>
+						<option data-name="Lauseid" value="lauseid">Lauseid</option>
+						<option data-name="Vigu" value="vigu">Vigu</option>
+					</select>
+				</div>
 
 				<h4>Mille järgi kuvada</h4>
 				<div id="pede">
@@ -133,7 +142,7 @@
 				</select>
 				</div>
 
-				<button type="button" class="collapsible">Kuvatud väärtused</button>
+				<button type="button" class="collapsible"><p>Kuvatud väärtused</p><i class="fas fa-chevron-down"></i></button>
 				<div class="content">
 					<div id="filters">
 						<form>
@@ -158,7 +167,7 @@
 				<div id="pede">
 
 				<!-- Author filters -->
-				<button type="button" class="collapsible">Isiku andmed</button>
+				<button type="button" class="collapsible"><p>Isiku andmed</p><i class="fas fa-chevron-down"></i></button>
 				<div class="content">
 					<div id="authorFilter">
 						<input type="checkbox" name="filterDetailed"
@@ -192,7 +201,7 @@
 				</div>
 				
 				<!-- Text filters -->
-				<button type="button" class="collapsible">Teksti andmed</button>
+				<button type="button" class="collapsible"><p>Teksti andmed</p><i class="fas fa-chevron-down"></i></button>
 				<div class="content">
 					<!-- Tekst -->
 					<div id="textFilter">
@@ -219,7 +228,7 @@
 				<!-- Value filters -->
 				<hr>
 				<h2>Kitsendatud väärtused</h2>
-				<form>
+				<form id="helpFiltersDetailed">
 				<div id="filtersDetailed">
 
 				</div>
@@ -229,18 +238,11 @@
 		<!-- Stats (right side) -->
 		<div class="stats">
 			<div id="alamkorpused" class="echarts"></div>
-			<h3>Aktiivsed filtrid:</h3>
+			<h3>Aktiivsed filtrid</h3>
 			<div id="activeFilters">
-				<p id="kuvaFilter"></p>
+				<!-- <p id="kuvaFilter"></p> -->
 			</div>
 		</div>
-	</section>
-
-	<!-- Mini stats -->
-	<section class="miniStats">
-		<p id=documents2>Dokumente<br><span id="documents"></span></p>
-		<p id=sentences2>Lauseid<br><span id="sentences"></span></p>
-		<p id=words2>Sõnu<br><span id="words"></span></p>
 	</section>
 
 	<!-- Footer -->
