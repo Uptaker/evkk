@@ -8,6 +8,8 @@ let availableValues = [];
 let isHelpOn = true;
 let mode = "tulp";
 let selectedBy;
+let title;
+let beautifySelected;
 
 // On page load
 $(document).ready(async function () {
@@ -17,7 +19,7 @@ $(document).ready(async function () {
 
 
 
-    updateFilters();
+    await updateFilters();
 
     filter = document.querySelector("#filterBy").value; // current filter
     // initial fetchers on page load, to display stats
@@ -477,7 +479,23 @@ async function updateFilter() {
             beautify = "tekstitüübi";
             break;
     }
-    document.querySelector(".stats h2").innerHTML = `Tekstid ${beautify} järgi`;
+
+    switch (selectedBy) {
+        case "sonu":
+            beautifySelected = "Sõnad";
+            break;
+        case "tekste":
+            beautifySelected = "Tekstid";
+            break;
+        case "vigu":
+            beautifySelected = "Vead";
+            break;
+        case "lauseid":
+            beautifySelected = "Laused";
+            break;
+    }
+
+    title = `${beautifySelected} ${beautify} järgi`;
     await readfilter2fromDB(filter);
     await updateKorpusCheckboxes();
 }
@@ -654,7 +672,9 @@ async function fetchAvailableDetailedValues(filtered) {
 function loadStats(data) {
 
     let ages = []
-    let filterData = data;
+    let filterData = data.sort(function(a, b){
+        return a[selectedBy] - b[selectedBy];
+    });;
 
     // filter gained data
     filterData.forEach((e) => {
@@ -698,12 +718,16 @@ function loadStats(data) {
 
     // chart settings
     option = {
-        color: colors,
-
         title: {
-            text: "Keelekorpus",
-            // show: true
+            text: title,
+            show: true,
+            x: 'center',
+            textStyle: {
+                fontSize: 22,
+                fontFamily: 'Merriweather'
+            }
         },
+        color: colors,
         calculatable: true,
 
         tooltip: {
@@ -761,115 +785,31 @@ function loadStats(data) {
             {
                 // show: false,
                 type: 'value',
-                name: '',
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
             },
             {
                 //show: false,
                 type: 'value',
-                name: '',
-                
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
+                name: beautifySelected,
             },
             {
                 //show: false,
                 type: 'value',
-                name: '',
-                
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
+                name: beautifySelected,
             },
             {
                 //show: false,
                 type: 'value',
-                name: '',
-                
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
+                name: beautifySelected,
             },
             {
                 //show: false,
                 type: 'value',
-                name: '',
-                
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
+                name: beautifySelected,
             },
             {
                 //show: false,
                 type: 'value',
-                name: '',
-                
-                position: 'right',
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        color: colors[1],
-                        fontSize: 18
-                    }
-                },
-                axisLabel: {
-                    show: false,
-                    //containLabel: true,
-                    formatter: ''
-                }
+                name: beautifySelected,
             }
         ],
         series: [
@@ -989,6 +929,16 @@ function loadPie(data) {
     switch (filter) {
         case "vigu":
             option = {
+                title: {
+                    text: 'miks ei toota',
+                    show: true,
+                    left: 'center',
+                    x: 'center'
+                    // textStyle: {
+                    //     fontSize: 22,
+                    //     fontFamily: 'Merriweather'
+                    // }
+                },
                 tooltip: {
                     trigger: 'item'
                 },
@@ -1033,6 +983,16 @@ function loadPie(data) {
             break;
         case "lauseid":
             option = {
+                title: {
+                    text: 'miks ei toota',
+                    show: true,
+                    left: 'center',
+                    x: 'center'
+                    // textStyle: {
+                    //     fontSize: 22,
+                    //     fontFamily: 'Merriweather'
+                    // }
+                },
                 tooltip: {
                     trigger: 'item'
                 },
@@ -1077,6 +1037,16 @@ function loadPie(data) {
             break;
         case "s6nu":
             option = {
+                title: {
+                    text: 'miks ei toota',
+                    show: true,
+                    left: 'center',
+                    x: 'center'
+                    // textStyle: {
+                    //     fontSize: 22,
+                    //     fontFamily: 'Merriweather'
+                    // }
+                },
                 tooltip: {
                     trigger: 'item'
                 },
@@ -1121,6 +1091,15 @@ function loadPie(data) {
             break;
         case "tekste":
             option = {
+                title: {
+                    text: title,
+                    show: true,
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 22,
+                        fontFamily: 'Merriweather'
+                    }
+                },
                 tooltip: {
                     trigger: 'item'
                 },
@@ -1166,47 +1145,5 @@ function loadPie(data) {
     }
 
     option && myChart.setOption(option);
-
-
     filter = document.querySelector("#filterBy").value;
-    let beautify;
-    switch (filter) {
-        case "vanus":
-            beautify = "vanuse";
-            break;
-        case "haridus":
-            beautify = "hariduse";
-            break;
-        case "sugu":
-            beautify = "soo";
-            break;
-        case "elukoht":
-            beautify = "elukoha";
-            break;
-        case "kodukeel":
-            beautify = "kodukeele";
-            break;
-        case "emakeel":
-            beautify = "emakeele";
-            break;
-        case "tekstikeel":
-            beautify = "tekstikeele";
-            break;
-        case "abivahendid":
-            beautify = "abivahendite";
-            break;
-        case "taust":
-            beautify = "sotsiaalse tausta";
-            break;
-        case "keeletase":
-            beautify = "keeletaseme";
-            break;
-        case "tekstikeel":
-            beautify = "tekstikeele";
-            break;
-        case "tekstityyp":
-            beautify = "tekstitüübi";
-            break;
-    }
-    document.querySelector(".stats h2").innerHTML = `Tekstid ${beautify} järgi`;
 }

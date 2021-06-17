@@ -8,7 +8,6 @@ body {
 
 .collapsible {
   background-color: rgb(105, 170, 105);
-  /* background-color: rgb(53, 138, 53); */
   color: rgb(37, 63, 47);
   cursor: pointer;
   padding: 10px 18px;
@@ -21,6 +20,7 @@ body {
   font-family: 'Merriweather', serif;
   font-weight: bold;
   margin: 10px 0;
+  transition: 0.3s all;
 }
 
 .active, .collapsible:hover {
@@ -28,7 +28,6 @@ body {
 }
 
 .content {
-  /* padding: 0 18px; */
   display: none;
   overflow: hidden;
   background-color: rgb(142, 201, 142);
@@ -120,13 +119,23 @@ footer {
   box-sizing: border-box;
 }
 
+hr {
+  border-top: 1px solid rgb(96, 161, 96);
+  border-bottom: 1px solid rgb(160, 218, 160);
+  border-right: 1px solid rgb(96, 161, 96);
+}
+
 .radio tr {
   padding: 10px;
 }
 .radio td {
-  padding-bottom: 10px;
   font-size: 13.33333px;
   font-weight: bold;
+  padding: 5px;
+}
+
+.radio td:first-of-type {
+  padding-bottom: 10px;
 }
 
 input[type="radio"] {
@@ -449,6 +458,7 @@ input[type="checkbox"] {
 .echarts {
     width: 100%;
     min-height: 700px;
+    margin-top: 20px;
 }
 
 
