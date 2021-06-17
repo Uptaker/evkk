@@ -15,7 +15,7 @@ body {
   border: none;
   text-align: left;
   outline: none;
-  font-size: 13.33333px;
+  font-size: 20px;
   border-radius: 5px;
   font-family: 'Merriweather', serif;
   font-weight: bold;
@@ -102,18 +102,21 @@ footer {
     border-top-left-radius: 5px;
 }
 
+
+
 .dropdown h4 {
   text-align: left;
   margin-top: 15px;
   margin-bottom: 5px;
   margin-left: 10px;
   width: 100%;
+  font-size: 24px;
 }
 
 .radio {
   text-align: left;
   display: block;
-  font-size: 13.33333;
+  font-size: 24px;
   background-color: rgb(105, 170, 105);
   padding: 2px 5px;
   border-radius: 5px;
@@ -130,7 +133,7 @@ hr {
   padding: 10px;
 }
 .radio td {
-  font-size: 13.33333px;
+  font-size: 20px;
   font-weight: bold;
   padding: 5px;
 }
@@ -201,6 +204,7 @@ nav a:hover {
     background-color: rgba(145, 219, 145, 0);
     gap: 15px;
     box-shadow: none;
+    font-size: 24px;
 }
 
 .miniStats p {
@@ -339,7 +343,7 @@ a {
 .statsType button:focus {outline:0;}
 
 .dropdown p {
-    font-size: 13.3333px;
+  font-size: 20px;
 }
 
 .statsType button {
@@ -419,6 +423,7 @@ label i {
 
 .list {
     width: 100%;
+    font-size: 20px;
     padding: 10px;
     border-radius: 5px;
     border: none;
@@ -674,27 +679,35 @@ input[type="checkbox"] {
 
   /*------------------NEW--------------------------*/
 
-#accsesebilty_button{
-  /*font-family: 'Merriweather', serif;
-  border: none;
-  display: flex;
-  height: 15%;*/
-  position: relative;
-  color: rgb(37, 63, 47);
-  color: black;
-  /*font-weight: bold;
-  padding: 20px;*/
-  margin-left: auto; 
-  margin-right: 1%;
-  margin-bottom: auto;
-  margin-top: auto;
-  cursor: pointer;
-  transition: all 0.2s;
-  /*border-radius: 5px;*/
-  font-size: 54px; /*54*/
+  #accsesebilty_button{
+	  /*font-family: 'Merriweather', serif;
+    border: none;
+    display: flex;
+    height: 15%;*/
+    position: relative;
+    /*background-color: #78B978;*/
+    color: rgb(37, 63, 47);
+    /*font-weight: bold;
+    padding: 20px;*/
+    margin-left: auto; 
+    margin-right: 1%;
+    margin-bottom: auto;
+    margin-top: auto;
+    cursor: pointer;
+    transition: all 0.2s;
+    /*border-radius: 5px;*/
 }
 
 #accsesebilty_button:hover{
   color:rgb(58, 95, 58);
   transform: scale(1.1);
+}
+
+
+#help-toggle, #accsesebilty_button{
+  display:inline-block;
+}
+
+footer {
+  font-size: 24px;
 }

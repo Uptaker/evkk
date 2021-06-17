@@ -11,21 +11,20 @@ let selectedBy;
 let title;
 let beautifySelected;
 
+/*vaeg nägija nupp*/
+let accsesebility = document.getElementById('accsesebilty_button');
+let isAccsesebilityOn = true;
+let normal = document.getElementById("normal");
+let secondary = document.getElementById("secondary");
+
 // On page load
 $(document).ready(async function () {
-    initCollapsable();
-
     selectedBy = document.querySelector("#selectedValue").value;
-
-
-
-    await updateFilters();
 
     filter = document.querySelector("#filterBy").value; // current filter
     // initial fetchers on page load, to display stats
 
     await updateFilter();
-    await updateKorpusCheckboxes();
 
 
     showDefault();
@@ -63,13 +62,6 @@ async function fetchDetailed() {
             }
         }
     });
-    let filterNames = [];
-    let filterValues = [];
-    for (f of selectedFilters) {
-        filterNames.push(f.filter);
-        filterValues.push(f.data);
-    }
-
 
     let data = {
         corpus: selectedKorpus,
@@ -90,11 +82,8 @@ async function fetchDetailed() {
             document.querySelector('#alamkorpused').style.display = 'none'
         } else {
             result = await $.ajax({
-                // url: "/api/texts/detailedSearch?data=",
                 url: "/api/texts/detailedSearch?data=" + encodeURI(JSON.stringify(data)),
                 type: "GET",
-                // data: { corpus: selectedKorpus, pName: filter, pValue: lcValues, filterNames: filterNames, filterValues: filterValues},
-                // data: JSON.stringify(data),
                 dataType: 'json',
                 contentType: "application/json",
             });
@@ -105,7 +94,6 @@ async function fetchDetailed() {
             }
 
             console.log("ajax successful, parsed data: " + result)
-            // document.querySelector('#alamkorpused').style.display = 'block'
         }
 
     } catch (error) {
@@ -132,6 +120,7 @@ async function initCollapsable() {
     getSelectedValues();
 }
 
+// toggles collapsible dropdown menu activity state, hides or unhides it.
 function toggleDropdown() {
     this.classList.toggle("active");
     let content = this.nextElementSibling;
@@ -141,8 +130,6 @@ function toggleDropdown() {
     content.style.display = "block";
     }
 }
-
-// [{filter: "vanus", data: vanused.join()}, {filter: "tekstikeel", data: tekstikeeled.join()}]
 
 async function updateFilters() {
     selectedFilters = [];
@@ -180,12 +167,14 @@ function getSelectedValues() {
         for (let i = 0; i < allCheckboxes.length; i++) {
             let next = allCheckboxes[i].nextElementSibling.firstChild;
             next.classList.add("hidden");
+            console.log("removed")
         }
         if (checkboxes.length == 0) {
             for (i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = true;
                 let next = checkboxes[i].nextElementSibling.firstChild;
                 next.classList.remove("hidden");
+                console.log("add")
             }
             document.querySelector('#alamkorpused').style.display = 'none'
         
@@ -195,10 +184,10 @@ function getSelectedValues() {
                 selectedFilters[x].data.push(checkboxes[i].defaultValue);
                 let next = checkboxes[i].nextElementSibling.firstChild;
                 next.classList.remove("hidden");
+                console.log("add")
             }
             document.querySelector('.echarts').style.display = 'block'
         }
-        // selectedFilters.push(checkboxes[i].value);
     }
 }
 
@@ -226,7 +215,7 @@ async function addValueSelection() {
         .forEach(el => el
             .addEventListener('click', updateSelectedValues));
     }
-    initCollapsable();
+    await initCollapsable();
     await fetchDetailed()
 }
 
@@ -358,12 +347,14 @@ async function updateFilter2Checkboxes() {
         for (i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = true;
             let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
         }
         document.querySelector('#alamkorpused').style.display = 'none'
     } else {
         for (let i = 0; i < checkboxes.length; i++) {
             selectedValues.push(checkboxes[i].defaultValue);
             let next = checkboxes[i].nextElementSibling.firstChild;
+            next.classList.remove("hidden");
         }
         document.querySelector('.echarts').style.display = 'block'
     }
@@ -553,7 +544,7 @@ async function updateKorpusCheckboxes() {
     }
     await updateFilter2Checkboxes()
     // await fetchSome();
-    await fetchDetailed();
+    await updateFilters();
     await fetchMiniStats();
 }
 
@@ -695,8 +686,6 @@ function loadStats(data) {
     let errors = [];
     let errorTypes = [];
     let chartData = [];
-    console.log(document.querySelector("#selectedValue"))
-    console.log(document.querySelector("#selectedValue").getAttribute("data-name"));
     filterData.forEach((e) => {
         chartData.push(e[selectedBy]);
     });
@@ -823,8 +812,34 @@ function loadStats(data) {
     };
 
     option && myChart.setOption(option);
-}
 
+    let normalOn = false;
+
+    //-----------------TABELI RESIZEMINE----------------//
+    accsesebility.addEventListener("click", () => {
+        if (normalOn) {
+            normal.disabled = false;
+            secondary.disabled = true;
+            chartDom.style.width = (window.innerWidth-450)+'px';
+            chartDom.style.height = (window.innerHeight-800)+'px';
+            console.log("olen väike");
+            accsesebility.style.color = 'rgb(105, 173, 105';
+            $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 700px;"})
+            normalOn = false;
+            
+        } else  {
+            normal.disabled = true;
+            secondary.disabled = false;
+            chartDom.style.width = (window.innerWidth-450)+'px';
+            chartDom.style.height = (window.innerHeight-900)+'px';
+            accsesebility.style.color = 'rgb(37, 63, 47)';
+            $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 980px;"})
+            normalOn = true;
+        }
+        
+        myChart.resize();
+    });
+}
 
 
 
@@ -907,7 +922,7 @@ function loadPie(data) {
             {
                 name: 'Protsent',
                 type: 'pie',
-                radius: '50%',
+                radius: '70%',
                 data: [
                     {value: percent[0], name: ages[0]},
                     {value: percent[1], name: ages[1]},
@@ -962,7 +977,7 @@ function loadPie(data) {
                     {
                         name: 'Vigu',
                         type: 'pie',
-                        radius: '50%',
+                        radius: '70%',
                         data: [
                             {value: errors[0], name: ages[0]},
                             {value: errors[1], name: ages[1]},
@@ -1016,7 +1031,7 @@ function loadPie(data) {
                     {
                         name: 'Lauseid',
                         type: 'pie',
-                        radius: '50%',
+                        radius: '70%',
                         data: [
                             {value: sentences[0], name: ages[0]},
                             {value: sentences[1], name: ages[1]},
@@ -1035,17 +1050,16 @@ function loadPie(data) {
                 ]
             };
             break;
-        case "s6nu":
+        case "sonu":
             option = {
                 title: {
-                    text: 'miks ei toota',
+                    text: title,
                     show: true,
                     left: 'center',
-                    x: 'center'
-                    // textStyle: {
-                    //     fontSize: 22,
-                    //     fontFamily: 'Merriweather'
-                    // }
+                    textStyle: {
+                        fontSize: 22,
+                        fontFamily: 'Merriweather'
+                    }
                 },
                 tooltip: {
                     trigger: 'item'
@@ -1068,9 +1082,9 @@ function loadPie(data) {
                 // },
                 series: [
                     {
-                        name: 'S6nu',
+                        name: 'Sõnu',
                         type: 'pie',
-                        radius: '50%',
+                        radius: '70%',
                         data: [
                             {value: words[0], name: ages[0]},
                             {value: words[1], name: ages[1]},
@@ -1123,7 +1137,7 @@ function loadPie(data) {
                     {
                         name: 'Tekste',
                         type: 'pie',
-                        radius: '50%',
+                        radius: '70%',
                         data: [
                             {value: texts[0], name: ages[0]},
                             {value: texts[1], name: ages[1]},
@@ -1146,4 +1160,30 @@ function loadPie(data) {
 
     option && myChart.setOption(option);
     filter = document.querySelector("#filterBy").value;
+
+    //-----------------TABELI RESIZEMINE----------------//
+    let normalOn = false;
+    accsesebility.addEventListener("click", () => {
+        if (normalOn) {
+            normal.disabled = false;
+            secondary.disabled = true;
+            chartDom.style.width = (window.innerWidth-450)+'px';
+            chartDom.style.height = (window.innerHeight-800)+'px';
+            console.log("olen väike");
+            accsesebility.style.color = 'rgb(105, 173, 105';
+            $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 700px;"})
+            normalOn = false;
+        
+        } else  {
+            normal.disabled = true;
+            secondary.disabled = false;
+            chartDom.style.width = (window.innerWidth-450)+'px';
+            chartDom.style.height = (window.innerHeight-900)+'px';
+            accsesebility.style.color = 'rgb(37, 63, 47)';
+            $("#alamkorpused.echarts").attr({"style":"width: 100%;height: 980px;"})
+            normalOn = true;
+        }
+    
+        myChart.resize();
+    });
 }
