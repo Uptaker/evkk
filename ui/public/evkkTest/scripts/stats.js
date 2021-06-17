@@ -226,6 +226,7 @@ async function updateSelectedValues() {
     }
     if (this.checked) {
         selectedFilters[filterIndex].data.push(this.defaultValue);
+        console.log(selectedFilters[filterIndex].data);
         
     } else {
         selectedFilters[filterIndex].data.splice(index);
