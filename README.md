@@ -139,10 +139,10 @@ unzip master.zip
 ### Seejärel kirjutage kõik allolevad käsklused eraldi Ubuntu akendesse.
 **Kindlasti oodake käsklused lõpuni enne kui liigute järgmisesse aknasse!**
 ```bash
-cd evkk/evkk-main && sudo compose-up
+cd evkk/evkk-main && sudo docker-compose up
 ```
 ```bash
-cd evkk/evkk-main && sudo ./gradlew:db:bootRun --args 'clean migrate seed'
+cd evkk/evkk-main && sudo ./gradlew :db:bootRun --args 'clean migrate seed'
 ```
 ```bash
 cd evkk/evkk-main && ./gradlew :api:bootRun
@@ -164,10 +164,10 @@ localhost:3000/evkkTest
 sudo dockerd
 ```
 ```bash
-cd evkk/evkk-main && sudo compose-up
+cd evkk/evkk-main && sudo docker-compose up
 ```
 ```bash
-cd evkk/evkk-main && sudo ./gradlew:db:bootRun --args 'clean migrate seed'
+cd evkk/evkk-main && sudo ./gradlew :db:bootRun --args 'clean migrate seed'
 ```
 ```bash
 cd evkk/evkk-main && ./gradlew :api:bootRun
