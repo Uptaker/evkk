@@ -123,7 +123,7 @@ sudo apt install nodejs && sudo apt install npm && sudo npm install -g yarn && s
 
 ## Keskkonna käivitamine
 ```bash
-mkdir evkk && cd evkk && wget https://github.com/centre-for-educational-technology/evkk/archive/refs/heads/master.zip
+mkdir evkk && cd evkk && wget https://github.com/Uptaker/evkk/archive/refs/heads/main.zip
 ```
 
 ### Kirjutage allolev käsklus, et kontrollida kas tarkvara laadis end alla:
