@@ -145,7 +145,7 @@ cd evkk/evkk-main && sudo docker-compose up
 cd evkk/evkk-main && sudo ./gradlew :db:bootRun --args 'clean migrate seed'
 ```
 ```bash
-cd evkk/evkk-main && ./gradlew :api:bootRun
+cd evkk/evkk-main && sudo ./gradlew :api:bootRun
 ```
 ```bash
 cd evkk/evkk-main && yarn --cwd=./ui install && yarn --cwd=./ui start
@@ -170,11 +170,17 @@ cd evkk/evkk-main && sudo docker-compose up
 cd evkk/evkk-main && sudo ./gradlew :db:bootRun --args 'clean migrate seed'
 ```
 ```bash
-cd evkk/evkk-main && ./gradlew :api:bootRun
-```
-```bash
 cd evkk/evkk-main && yarn --cwd=./ui install && yarn --cwd=./ui start
 ```
+```bash
+cd evkk/evkk-main && sudo ./gradlew :api:bootRun
+```
+
+## Juhul, kui tekib pg_tblspc error
+```bash
+cd evkk/evkk-main && sudo rm -rf .docker/
+```
+
 ### Testid ja testimise tulemused:
 
 - [Link testimise dokumendile](https://docs.google.com/document/d/1P7JjFxXx7RJddUG7pZldC3zIrb_HHy1xk6GeuDOaUis/edit?usp=sharing)
